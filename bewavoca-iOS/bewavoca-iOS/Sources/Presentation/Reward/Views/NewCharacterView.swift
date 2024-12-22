@@ -1,8 +1,22 @@
+//
+//  NewCharacterView.swift
+//  bewavoca-iOS
+//
+//  Created by Moo on 2024/12/22.
+//
+//  캐릭터 해금 축하 화면입니다.
+//  - 해금된 캐릭터의 축하 이미지 표시
+//  - 확인 버튼 클릭 시 메인 화면으로 이동(현재 미구현)
+
 import SwiftUI
 
 struct NewCharacterView: View {
-    let characterType: CharacterType
     @Environment(\.dismiss) private var dismiss
+    let characterType: CharacterType
+    
+    private var unlockedCharacter: UnlockedCharacterContent.Character {
+        UnlockedCharacterContent.characters[characterType]!
+    }
     
     var body: some View {
         DeviceScaledView{
@@ -15,11 +29,11 @@ struct NewCharacterView: View {
                         .font(.custom("GmarketSansBold", size: 70))
                         .foregroundStyle(.white)
                     
-                    Image("character_unlock_dongbaek")
+                    Image(unlockedCharacter.unlockImage)
                         .frame(width: 495)
                     
                     Button {
-                        dismiss()
+                        // 여기에 메인뷰로 넘어가는 로직 짜야 함.
                     } label: {
                         Image("btn_confirm")
                             .frame(width: 201)
