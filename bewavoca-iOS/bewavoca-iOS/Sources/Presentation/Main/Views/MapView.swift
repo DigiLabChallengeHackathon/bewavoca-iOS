@@ -5,7 +5,7 @@ import SwiftUI
  실제 View 를 NavigationStack 으로 감싸야합니다
  */
 
-enum Stage: CaseIterable {
+enum Stage: CaseIterable, CustomStringConvertible {
     case garden, plateau, village, meadow, ridge
     
     var index: Int {
@@ -15,6 +15,16 @@ enum Stage: CaseIterable {
         case .village: return 3
         case .meadow: return 4
         case .ridge: return 5
+        }
+    }
+    
+    var description: String {
+        switch self {
+        case .garden: return "garden"
+        case .plateau: return "plateau"
+        case .village: return "village"
+        case .meadow: return "meadow"
+        case .ridge: return "ridge"
         }
     }
 }
@@ -49,7 +59,7 @@ struct MapView: View {
                         isActive: userData.stage + 1 == stage.index
                     )
                 }
-                .buttonStyle(BaseButtonStyle()) 
+                .buttonStyle(BaseButtonStyle())
             }
         }
         .frame(width: 1102 , height: 666)
