@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "image_symbolmark.png",
+      "filename" : "Intersect.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Group 2085664999@2x.png",
+      "filename" : "Intersect@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Group 2085664999@3x.png",
+      "filename" : "Intersect@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

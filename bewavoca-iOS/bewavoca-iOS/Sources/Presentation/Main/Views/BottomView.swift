@@ -2,29 +2,41 @@ import SwiftUI
 
 struct BottomView: View {
     @Binding var userData: UserData
+    @State private var showCharacterSelect = false
+    
     var body: some View {
         HStack {
             Spacer()
             
             VStack {
-                Image("big_character_1")
+                Image("big_character_\(userData.character)")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 261, height: 321)
                     .offset(y: 72)
                 
-                NavigationLink(destination: NextSampleGameView(test: "캐릭터 바꾸러")) {
+                Button(action: {
+                    showCharacterSelect = true
+                }, label: {
                     Image("btn_character")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 343, height: 143)
-                }
-                .buttonStyle(EffectButtonStyle())
+                })
             }
         }
         .frame(width: 1366, height: 392)
         .padding(.horizontal, 46)
         .padding(.bottom, 113)
+        .fullScreenCover(isPresented: $showCharacterSelect) {
+            CharacterSelectionView(
+                userClearedStage: userData.stage,
+                currentCharacter: userData.character,
+                updateCharacter: { selectedCharacter in
+                    userData.character = selectedCharacter
+                }
+            )
+        }
     }
 }
 
