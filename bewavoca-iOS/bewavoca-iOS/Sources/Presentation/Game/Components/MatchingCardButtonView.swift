@@ -62,6 +62,7 @@ struct MatchingCardButtonView: View {
     var quizzes: [MatchQuiz]
     @Binding var gameOver: Bool
     @Binding var matchedPairs: Int
+    @Binding var currentMatchState: CardState
     
     @State private var cards: [MatchCard] = []
     @State private var selectedIndices: [Int] = []
@@ -113,15 +114,21 @@ struct MatchingCardButtonView: View {
         if cards[firstIndex].id == cards[secondIndex].id {
             cards[firstIndex].state = .correct
             cards[secondIndex].state = .correct
+            currentMatchState = .correct
             matchedPairs += 1
         } else {
             cards[firstIndex].state = .incorrect
             cards[secondIndex].state = .incorrect
+            currentMatchState = .incorrect
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 self.cards[firstIndex].state = .defaultState
                 self.cards[secondIndex].state = .defaultState
             }
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            currentMatchState = .defaultState
         }
         
         selectedIndices.removeAll()
@@ -154,6 +161,7 @@ struct MatchCard: Identifiable {
 #Preview {
     @Previewable @State var gameOver: Bool = false
     @Previewable @State var matchedPairs: Int = 0
+    @Previewable @State var currentMatchState: CardState = .defaultState
     
     VStack {
         Text("Matched Pairs: \(matchedPairs)")
@@ -174,7 +182,8 @@ struct MatchCard: Identifiable {
                 MatchQuiz(matchId: 4, standard: "예쁘다", jeju: "곱다")
             ],
             gameOver: $gameOver,
-            matchedPairs: $matchedPairs
+            matchedPairs: $matchedPairs,
+            currentMatchState: $currentMatchState
         )
     }
     .padding()
