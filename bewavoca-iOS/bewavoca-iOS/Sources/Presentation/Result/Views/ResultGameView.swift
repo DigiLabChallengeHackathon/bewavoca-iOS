@@ -22,13 +22,15 @@ enum GameType: CaseIterable, CustomStringConvertible {
 }
 
 struct ResultGameView: View {
+    @EnvironmentObject private var userViewModel: UserViewModel
+    @Environment(\.dismiss) private var dismiss
     
-    @State private var userData = UserData(userId: 4, nickname: "김태인", character: 1, stage: 4, level: 1)
+    let totalQuestions: Int
+    let correctAnswers: Int
+    let stage: Stage
+    let gameType: GameType
     
-    var totalQuestions: Int
-    var correctAnswers: Int
-    var stage: Stage
-    var gameType: GameType
+    @State private var isShowingRewardView = false
     
     var body: some View {
         NavigationStack {
@@ -45,7 +47,7 @@ struct ResultGameView: View {
                                 HStack(alignment: .top) {
                                     VStack{
                                         Spacer()
-                                        Image("image_result_character_big_1")
+                                        Image("image_result_character_big_\(userViewModel.userData.character)")
                                             .resizable()
                                             .scaledToFit()
                                             .frame(height: 438)
@@ -87,7 +89,21 @@ struct ResultGameView: View {
                                             .foregroundColor(Color.black)
                                             .padding(.bottom, 32)
                                         
-                                        NavigationLink(destination: MainView()) {
+                                        Button(action: {
+                                            if Double(correctAnswers) / Double(totalQuestions) >= 0.5 {
+                                                let stageIncreased = userViewModel.checkAndUpdateProgress(
+                                                    clearedStage: stage.index,
+                                                    clearedLevel: gameType.level
+                                                )
+                                                if stageIncreased {
+                                                    isShowingRewardView = true
+                                                } else {
+                                                    dismiss()
+                                                }
+                                            } else {
+                                                dismiss()
+                                            }
+                                        }) {
                                             Image("btn_confirm")
                                                 .resizable()
                                                 .scaledToFill()
@@ -115,6 +131,9 @@ struct ResultGameView: View {
                 }
                 .frame(height: 1024)
             }
+            .fullScreenCover(isPresented: $isShowingRewardView) {
+                RewardView(characterType: .getCharacterType(for: stage))
+            }
         }
     }
     
@@ -129,8 +148,4 @@ struct ResultGameView: View {
     private func getGameLevel() -> Int {
         return gameType.level
     }
-}
-
-#Preview {
-    ResultGameView(totalQuestions: 4, correctAnswers: 2, stage: .meadow, gameType: .match)
 }
