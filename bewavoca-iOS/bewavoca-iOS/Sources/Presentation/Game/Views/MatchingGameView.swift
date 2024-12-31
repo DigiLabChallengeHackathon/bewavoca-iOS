@@ -2,6 +2,8 @@ import SwiftUI
 
 struct MatchingGameView: View {
     @State var currentMatchState: CardState = .defaultState
+    let stage: Stage
+    
     var body: some View {
         NavigationStack {
             DeviceScaledView {
@@ -9,7 +11,10 @@ struct MatchingGameView: View {
                     BackgroundRectangleView {
                         VStack {
                             MatchingGameTopView()
-                            MatchingGameBodyView(currentMatchState: $currentMatchState)
+                            MatchingGameBodyView(
+                                currentMatchState: $currentMatchState,
+                                stage: stage
+                            )
                             Spacer()
                         }
                         .background(Color.clear)
@@ -96,6 +101,9 @@ struct MatchingGameView: View {
         
         @Binding var currentMatchState: CardState
         
+        let stage: Stage
+        let gameType: GameType = .match
+        
         let quizzes: [MatchQuiz] = [
             MatchQuiz(matchId: 1, standard: "할아버지", jeju: "하르방"),
             MatchQuiz(matchId: 2, standard: "무지개", jeju: "상고"),
@@ -131,14 +139,15 @@ struct MatchingGameView: View {
                     progressBarManager.start()
                 }
                 .navigationDestination(isPresented: $isGameFinished) {
-                    NextSampleGameView(test: "성공여부 -> \(quizzes.count) 중에 \(matchedPairs) 맞춤")
+                    ResultGameView(
+                        totalQuestions: quizzes.count,
+                        correctAnswers: matchedPairs,
+                        stage: stage,
+                        gameType: gameType
+                    )
                 }
                 .padding(.top, 54)
             }
         }
     }
-}
-
-#Preview {
-    MatchingGameView()
 }

@@ -1,14 +1,16 @@
 import SwiftUI
 
 struct MultipleChoiceGameView: View {
+    let stage: Stage
+    
     var body: some View {
         DeviceScaledView {
             BackgroundRectangleView {
-                NavigationStack{
+                NavigationStack {
                     VStack {
                         MultipleGameTopView()
                         
-                        MultipleGameBodyView()
+                        MultipleGameBodyView(stage: stage)
                         
                         Spacer()
                     }
@@ -59,6 +61,9 @@ struct MultipleGameTopView: View {
 }
 
 struct MultipleGameBodyView: View {
+    let stage: Stage
+    let gameType: GameType = .choice
+    
     @State private var currentQuizIndex: Int = 0
     @State private var selectedAnswer: Int? = nil
     @State private var correctCount: Int = 0
@@ -125,9 +130,12 @@ struct MultipleGameBodyView: View {
         }
         .padding()
         .navigationDestination(isPresented: $isGameFinished) {
-            Text("게임이 끝났습니다! 맞춘 갯수: \(correctCount) / 총 문제: \(quizzes.count)")
-                .font(.title)
-                .padding()
+            ResultGameView(
+                totalQuestions: quizzes.count,
+                correctAnswers: correctCount,
+                stage: stage,
+                gameType: gameType
+            )
         }
         .onAppear {
             progressBarManager.start() // 타이머 시작
@@ -160,5 +168,5 @@ struct MultipleGameBodyView: View {
 
 
 #Preview {
-    MultipleChoiceGameView()
+    MultipleChoiceGameView(stage: .garden)
 }

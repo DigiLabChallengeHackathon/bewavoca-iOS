@@ -1,23 +1,24 @@
 import SwiftUI
 
 struct OXGameView: View {
+    @EnvironmentObject private var userViewModel: UserViewModel
+    let stage: Stage
+    
     var body: some View {
         DeviceScaledView {
             BackgroundRectangleView {
-                    NavigationStack{
-                        
-                        VStack {
-                            // topview
-                            OXGameTopView()
-                            
-                            OXGameBodyView()
-                            
-                            Spacer()
-                        }
-                        .background(Color.clear)
-                        .padding(.top, 54)
+                NavigationStack {
+                    VStack {
+                        OXGameTopView()
+                        OXGameBodyView(
+                            stage: stage,
+                            gameType: .ox
+                        )
+                        Spacer()
+                    }
+                    .background(Color.clear)
+                    .padding(.top, 54)
                 }
-                
             }
         }
     }
@@ -65,6 +66,9 @@ struct OXGameTopView: View {
 
 
 struct OXGameBodyView: View {
+    let stage: Stage
+    let gameType: GameType
+    
     @State private var currentQuizIndex: Int = 0
     @State private var correctCount: Int = 0 // 맞춘 갯수 바인딩(API로 보낼 예정)
     
@@ -145,7 +149,12 @@ struct OXGameBodyView: View {
             .padding(.bottom, 132)
             .disabled(isButtonDisabled)
             .navigationDestination(isPresented: $isOXGameFinished) {
-                NextSampleGameView(test: "맞춘갯수 \(correctCount)/총문제 \(shuffledQuizzes.count)")
+                ResultGameView(
+                    totalQuestions: shuffledQuizzes.count,
+                    correctAnswers: correctCount,
+                    stage: stage,
+                    gameType: gameType
+                )
             }
             
         }
@@ -177,6 +186,5 @@ struct OXGameBodyView: View {
 }
 
 #Preview {
-    OXGameView()
+    OXGameView(stage: .garden)
 }
-
