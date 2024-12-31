@@ -1,32 +1,27 @@
 import SwiftUI
 
-struct MainView: View {
-    @State private var userData = UserData(userId: 4, nickname: "김태인", character: 1, stage: 3, level: 1)
-    
+struct MainView: View {    
+    // MARK: - Body
     var body: some View {
         DeviceScaledView {
-            NavigationStack{
+            NavigationStack {
                 ZStack {
-                    MapView(userData: $userData)
+                    MapView()
                         .frame(alignment: .center)
                     
-                    VStack{
-                        TopView(userData: $userData)
+                    VStack {
+                        TopView()
                             .frame(alignment: .top)
                         
                         Spacer()
                         
-                        BottomView(userData: $userData)
+                        BottomView()
                             .frame(alignment: .bottom)
                     }
                 }
                 .background(Color("myDarkBlue"))
-            }.frame(width: 1366, height: 1024)
+            }
+            .frame(width: 1366, height: 1024)
         }
     }
 }
-
-#Preview {
-    MainView()
-}
-
