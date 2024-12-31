@@ -52,4 +52,22 @@ final class UserViewModel: ObservableObject {
         userData.level = newLevel
         // TODO: 서버 연동 시 레벨 업데이트 API 호출 추가
     }
+    
+    /// 스테이지 클리어 시 진행도 업데이트
+    /// - Returns: 스테이지가 올라갔으면 true, 아니면 false
+    func checkAndUpdateProgress(clearedStage: Int, clearedLevel: Int) -> Bool {
+        guard clearedStage == userData.stage else { return false }
+        guard clearedLevel == userData.level else { return false }
+        
+        if userData.level == 3 {  // 현재 레벨이 3(최고 레벨)인 경우
+            let previousStage = userData.stage
+            updateStage(newStage: userData.stage + 1)  // 다음 스테이지로
+            updateLevel(newLevel: 1)  // 레벨 1로 초기화
+            
+            return userData.stage > previousStage  // 스테이지가 올라갔는지 여부 반환
+        } else {  // 현재 레벨이 1 또는 2인 경우
+            updateLevel(newLevel: userData.level + 1)  // 다음 레벨로
+            return false
+        }
+    }
 }
