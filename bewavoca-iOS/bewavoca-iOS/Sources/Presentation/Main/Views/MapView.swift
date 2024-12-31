@@ -30,7 +30,7 @@ enum Stage: CaseIterable, CustomStringConvertible {
 }
 
 struct MapView: View {
-    @Binding var userData: UserData
+    @EnvironmentObject private var userViewModel: UserViewModel
     
     private let stages: [(Stage, AnyShape, String, Color)] = [
         (.garden, AnyShape(GardenPathShape()), "garden", Color("myRed")),
@@ -55,8 +55,13 @@ struct MapView: View {
                         shape: shape,
                         stageName: stageName,
                         color: color,
-                        isOpen: userData.stage >= stage.index,
-                        isActive: userData.stage + 1 == stage.index
+                        // 기존 로직 - stage가 클리어한 스테이지
+                        // isOpen: userData.stage >= stage.index,
+                        // isActive: userData.stage + 1 == stage.index
+                        
+                        // 변경 로직 - stage가 현재 도전하는 스테이지
+                        isOpen: userViewModel.userData.stage > stage.index,
+                        isActive: userViewModel.userData.stage == stage.index
                     )
                 }
                 .buttonStyle(BaseButtonStyle())
@@ -66,12 +71,11 @@ struct MapView: View {
         .background(Color.clear)
     }
     
-    
+    // @ViewBuilder 사용하면 AnyView 사용 안해도 됨
     private func destinationView(for stage: Stage) -> some View {
-        print("?????????????//")
         switch stage {
         case .garden:
-            return AnyView(NextSampleGameView(test: "\(stage) garden"))
+            return AnyView(StageView())
         case .plateau:
             return AnyView(NextSampleGameView(test: "\(stage) plateau"))
         case .village:
@@ -122,9 +126,4 @@ struct ImageMapButtonView<ShapeType: Shape>: View {
         }
         .contentShape(shape)
     }
-}
-
-
-#Preview {
-    MapView(userData: .constant(UserData(userId: 4, nickname: "김태인", character: 1, stage: 3, level: 1)))
 }
