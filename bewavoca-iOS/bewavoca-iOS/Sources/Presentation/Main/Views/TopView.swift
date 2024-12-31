@@ -1,11 +1,12 @@
 import SwiftUI
 
 struct TopView: View {
-    @Binding var userData: UserData
+    @EnvironmentObject private var userViewModel: UserViewModel
+    
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                ProfileCard(character: userData.character, nickName: userData.nickname)
+                ProfileCard(character: userViewModel.userData.character, nickName: userViewModel.userData.nickname)
                 
                 NavigationLink(destination: NextSampleGameView(test: "설정")) {
                     Image("btn_setting")
@@ -97,9 +98,3 @@ struct CardModifier: ViewModifier {
     }
     
 }
-
-#Preview {
-    TopView(userData: .constant(UserData(userId: 4, nickname: "김태인", character: 1, stage: 3, level: 1)))
-        .background(Color.black)
-}
-
