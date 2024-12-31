@@ -13,34 +13,47 @@
 import SwiftUI
 
 struct AppEntryView: View {
+    // MARK: - Properties
     @AppStorage("userUUID") private var userUUID: String?
+    @StateObject private var userViewModel: UserViewModel
     @State private var isLoading = true
-    @State private var isNewUser = false  // 신규 사용자 여부
+    @State private var isNewUser: Bool = true
     
+    // 생성자에서 초기화
+    init() {
+        let isExisting = UserDefaults.standard.string(forKey: "userUUID") != nil
+        _userViewModel = StateObject(wrappedValue: UserViewModel(isExistingUser: isExisting))
+        _isNewUser = State(initialValue: UserDefaults.standard.string(forKey: "userUUID") == nil)
+    }
+    
+    // MARK: - Body
     var body: some View {
-        if isLoading {
-            SplashView()
-                .onAppear {
-                    // 첫 실행 시에만 UUID 생성
-                    if userUUID == nil {
-                        userUUID = UUID().uuidString
-                        isNewUser = true  // 신규 사용자로 표시
+        Group {
+            if isLoading {
+                SplashView()
+                    .onAppear {
+                        initializeAndProceed()
                     }
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                        isLoading = false
-                    }
-                }
-        } else {
-            if isNewUser {
-                // 신규 사용자: 온보딩으로
+            } else if isNewUser {
                 OnboardingView()
                     .transition(.opacity)
             } else {
-                // 기존 사용자: 메인으로 (목데이터 사용)
                 MainView()
-                    .environmentObject(UserViewModel(isExistingUser: true))
             }
+        }
+        .environmentObject(userViewModel)
+    }
+    
+    private func initializeAndProceed() {
+        if userUUID == nil {
+            userUUID = UUID().uuidString
+            isNewUser = true
+        } else {
+            isNewUser = false
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            isLoading = false
         }
     }
 }
