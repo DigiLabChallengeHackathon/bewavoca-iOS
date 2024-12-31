@@ -30,7 +30,7 @@ struct TimeProgressBar: View {
                     
                     HStack {
                         VStack(alignment: .trailing) {
-                            Text("\(Int(manager.remainingTime))")
+                            Text("\(Int(manager.remainingTime)) 초")
                                 .font(Font.custom("GmarkeSansMedium", size: 20))
                                 .foregroundColor(Color("myGrey01"))
                         }
