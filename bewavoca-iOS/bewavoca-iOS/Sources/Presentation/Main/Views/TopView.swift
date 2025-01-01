@@ -6,7 +6,7 @@ struct TopView: View {
     var body: some View {
         HStack {
             VStackLayout(alignment: .leading) {
-                ProfileCard(character: userData.character, nickName: userData.nickname)
+                ProfileCard(character: userViewModel.userData.character, nickName: userViewModel.userData.nickname)
                 
                 NavigationLink(destination: NextSampleGameView(test: "설정")) {
                     Image("btn_setting")
