@@ -5,8 +5,8 @@ struct TopView: View {
     
     var body: some View {
         HStack {
-            VStack(alignment: .leading) {
-                ProfileCard(character: userViewModel.userData.character, nickName: userViewModel.userData.nickname)
+            VStackLayout(alignment: .leading) {
+                ProfileCard(character: userData.character, nickName: userData.nickname)
                 
                 NavigationLink(destination: NextSampleGameView(test: "설정")) {
                     Image("btn_setting")
@@ -15,10 +15,11 @@ struct TopView: View {
                 .padding(.top, 34)
                 .buttonStyle(EffectButtonStyle())
             }
+            .frame(width: 275)
             
             Spacer()
             
-            VStack(alignment: .leading) {
+            VStack(alignment: .center) {
                 Image("image_brand")
                     .padding(.top, 11)
                     .frame(width: 293, height: 101)
@@ -27,12 +28,18 @@ struct TopView: View {
             
             Spacer()
             
-            Image("image_compass")
-                .frame(width: 167, height: 151)
+            VStack {
+                Image("image_compass")
+                    .frame(width: 167, height: 151)
+                    .padding(.leading, 107)
+                Spacer()
+            }
+            .frame(maxHeight: .infinity, alignment: .topTrailing)
         }
-        .frame(width:1366, height: 270)
+        .frame(height: 270)
         .padding(.top, 52)
         .padding(.horizontal, 46)
+        
     }
 }
 
@@ -43,7 +50,6 @@ struct ProfileCard: View {
     
     var body: some View {
         HStack(alignment: .center) {
-            
             ZStack(alignment: .topLeading) {
                 Rectangle()
                     .foregroundColor(Color("myDarkBlue"))
@@ -55,22 +61,22 @@ struct ProfileCard: View {
             }
             .frame(width: 105, height: 105)
             .clipShape(RoundedRectangle(cornerRadius: 20))
-            .padding([.top, .leading, .bottom], 16)
-            .padding([.trailing], 6)
+            .padding([.top, .leading, .bottom], 18)
+            .padding(.trailing, 16)
             
-            VStack(alignment: .leading) {
+            VStack {
                 Text("혼저옵서")
                     .font(Font.custom("GmarketSansMedium", size: 30))
                     .foregroundColor(Color("myDarkBlue"))
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 
                 // 글자 수에 따라 폰트 크기 조절
                 Text("\(nickName)")
                     .font(Font.custom("GmarketSansBold", size: fontSize(for: nickName)))
                     .foregroundColor(Color.black)
-                    .frame(maxWidth: .infinity, alignment: .leading) // 너비를 최대한 확장
-            }
-            .padding(.trailing, 0)
-            Spacer()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }.frame(width: 118)
+                .padding(.trailing, 20)
         }
         .frame(width: 275, height: 141)
         .background(Color.white)
@@ -83,10 +89,12 @@ func fontSize(for name: String) -> CGFloat {
     switch length {
     case 1...3:
         return 40 // 1~3글자일 때 폰트 크기
-    case 4...5:
-        return 28 // 4~5글자일 때 폰트 크기
+    case 4:
+        return 30 // 4글자일 때 폰트 크기
+    case 5:
+        return 24 // 5글자일 때 폰트 크기
     default:
-        return 25 // 그 이상은 작은 폰트
+        return 22 // 그 이상은 작은 폰트
     }
 }
 

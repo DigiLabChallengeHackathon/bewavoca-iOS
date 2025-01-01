@@ -5,6 +5,7 @@ struct MainView: View {
     var body: some View {
         DeviceScaledView {
             NavigationStack {
+
                 ZStack {
                     MapView()
                         .frame(alignment: .center)
