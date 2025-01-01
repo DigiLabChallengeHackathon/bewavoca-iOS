@@ -83,3 +83,20 @@ enum CharacterData {
         // ... 다른 캐릭터들의 정보
     ]
 }
+
+extension CharacterType {
+    static func getCharacterType(for stage: Stage) -> CharacterType {
+        switch stage {
+        case .garden:
+            return .dongbaek
+        case .plateau:
+            return .rabong
+        case .village:
+            return .jamneow
+        case .meadow:
+            return .jejuma
+        case .ridge:
+            return .halla
+        }
+    }
+}
