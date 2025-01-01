@@ -15,54 +15,40 @@ import SwiftUI
 ///   - `NicknameCardView`를 통해 닉네임 입력을 받음.
 ///   - 닉네임이 입력되면 `시작` 버튼이 활성화되어 다음 화면으로 진행할 수 있음.
 struct CreateNicknameView: View {
-    @EnvironmentObject private var userViewModel: UserViewModel
     @State private var nickname: String = ""
     @State private var isButtonPressed: Bool = false
-    @State private var isShowingMainView: Bool = false
     
     private var isButtonEnabled: Bool {
         return nickname.count >= 1
     }
     
-    // MARK: - Body
     var body: some View {
-        if isShowingMainView {
-            MainView()
-        } else {
-            DeviceScaledView {
-                ZStack {
-                    Color("myDarkBlue")
-                        .ignoresSafeArea()
+        DeviceScaledView {
+            ZStack {
+                Color("myDarkBlue")
+                    .ignoresSafeArea()
+                
+                VStack(spacing: 70) {
+                    TitleView()
                     
-                    VStack(spacing: 70) {
-                        TitleView()
-                        
-                        NicknameCardView(
-                            selectedCharacter: "character_card_harbang",
-                            text: "이름을 알려줘",
-                            nickname: $nickname
-                        )
-                        
-                        StartButtonView(
-                            isButtonPressed: $isButtonPressed,
-                            isButtonEnabled: isButtonEnabled,
-                            action: {
-                                userViewModel.setNickname(nickname)
-                                isShowingMainView = true
-                            }
-                        )
-                    }
+                    NicknameCardView(
+                        selectedCharacter: "character_card_harbang",
+                        text: "이름을 알려줘",
+                        nickname: $nickname  // 추후 $viewModel.nickname와 같이 사용하면 됨.
+                    )
+
+                    // 추후 viewModel에서 버튼 상태 관리, 유저 생성 기능까지 추가할 것.
+                    StartButtonView(
+                        isButtonPressed: $isButtonPressed,
+                        isButtonEnabled: isButtonEnabled
+
+                        // isEnabled: viewModel.isButtonEnabled, isLoading: viewModel.isLoading
+                    )   // viewModel.createUser()
                 }
             }
-            .ignoresSafeArea(.keyboard)
         }
+        .ignoresSafeArea(.keyboard)
     }
-}
-
-// MARK: - Preview
-#Preview {
-    CreateNicknameView()
-        .environmentObject(UserViewModel(isExistingUser: false))
 }
 
 // MARK: - TitleView
@@ -79,13 +65,11 @@ struct TitleView: View {
 struct StartButtonView: View {
     @Binding var isButtonPressed: Bool
     let isButtonEnabled: Bool
-    let action: () -> Void
     
     var body: some View {
         Button(action: {
             if isButtonEnabled {
                 isButtonPressed.toggle()
-                action()
             }
         }) {
             Image(isButtonEnabled ? "button_start_pressed" : "button_start_default")
@@ -93,4 +77,9 @@ struct StartButtonView: View {
         }
         .disabled(!isButtonEnabled)
     }
+}
+
+// MARK: - Preview
+#Preview {
+    CreateNicknameView()
 }

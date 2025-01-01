@@ -14,37 +14,32 @@ import SwiftUI
 // 뷰 전환간 애니메이션은 일단 넣지 않았습니다.
 struct OnboardingView: View {
     @State private var currentPage: OnboardingPage = .page1
-    @State private var isShowingNicknameView = false
     
     var body: some View {
-        if isShowingNicknameView {
-            CreateNicknameView()
-        } else {
-            DeviceScaledView {
-                ZStack {
-                    switch currentPage {
-                    case .page1:
-                        OnboardingView1()
-                    case .page2:
-                        OnboardingView2()
-                    case .page3:
-                        OnboardingView3()
-                    case .page4:
-                        OnboardingView4()
-                    case .page5:
-                        OnboardingView5()
-                    case .page6:
-                        OnboardingView6()
-                    case .page7:
-                        OnboardingView7()
-                    }
-                    
-                    TapToContinueButton {
-                        if currentPage == .page7 {
-                            isShowingNicknameView = true
-                        } else {
-                            currentPage = OnboardingPage(rawValue: currentPage.rawValue + 1) ?? .page7
-                        }
+        DeviceScaledView {
+            ZStack {
+                switch currentPage {
+                case .page1:
+                    OnboardingView1()
+                case .page2:
+                    OnboardingView2()
+                case .page3:
+                    OnboardingView3()
+                case .page4:
+                    OnboardingView4()
+                case .page5:
+                    OnboardingView5()
+                case .page6:
+                    OnboardingView6()
+                case .page7:
+                    OnboardingView7()
+                }
+                
+                TapToContinueButton {
+                    if currentPage == .page7 {
+                        // 닉네임 생성 뷰로 이동
+                    } else {
+                        currentPage = OnboardingPage(rawValue: currentPage.rawValue + 1) ?? .page7
                     }
                 }
             }

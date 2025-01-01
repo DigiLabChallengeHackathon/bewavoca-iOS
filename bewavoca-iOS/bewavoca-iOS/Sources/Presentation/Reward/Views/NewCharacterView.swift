@@ -18,8 +18,6 @@ struct NewCharacterView: View {
         UnlockedCharacterContent.characters[characterType]!
     }
     
-    @State private var shouldShowMain = false
-    
     var body: some View {
         DeviceScaledView{
             ZStack {
@@ -35,16 +33,13 @@ struct NewCharacterView: View {
                         .frame(width: 495)
                     
                     Button {
-                        shouldShowMain = true
+                        // 여기에 메인뷰로 넘어가는 로직 짜야 함.
                     } label: {
                         Image("btn_confirm")
                             .frame(width: 201)
                     }
                 }
                 .padding(.top, 30)
-            }
-            .fullScreenCover(isPresented: $shouldShowMain) {
-                MainView()
             }
         }
     }

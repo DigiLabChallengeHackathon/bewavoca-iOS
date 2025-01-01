@@ -1,8 +1,7 @@
 import SwiftUI
 
 struct TopView: View {
-    @EnvironmentObject private var userViewModel: UserViewModel
-    
+    @Binding var userData: UserData
     var body: some View {
         HStack {
             VStackLayout(alignment: .leading) {
@@ -106,3 +105,9 @@ struct CardModifier: ViewModifier {
     }
     
 }
+
+#Preview {
+    TopView(userData: .constant(UserData(userId: 4, nickname: "김태인", character: 1, stage: 3, level: 1)))
+        .background(Color.black)
+}
+

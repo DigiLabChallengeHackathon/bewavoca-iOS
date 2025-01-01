@@ -1,10 +1,12 @@
 import SwiftUI
 
 struct StageCardView: View {
-    let currentStage: Int      // 현재 보고 있는 스테이지 (garden = 1)
-    let userStage: Int         // 유저의 현재 스테이지
     let level: Int
+    
+    // 뒤로가기 핸들링 함수
     let onBackTapped: () -> Void
+    
+    // 스테이지 선택 핸들링 함수
     let onStageTapped: (Int) -> Void
     
     var body: some View {
@@ -24,6 +26,12 @@ struct StageCardView: View {
             .padding(.top, 50)
             
             // 스테이지 버튼들
+            /* StageCardView의 스테이지 버튼 구현부
+             * 1. ForEach로 1부터 3까지의 스테이지 버튼을 생성
+             * 2. 각 버튼이 탭되면 onStageTapped 클로저에 해당 stageNumber를 전달
+             * 3. StageItemButton으로 버튼의 외관을 구성하고 현재 상태(완료/현재/잠김)를 표시
+             * 4. disabled 수정자로 잠긴 스테이지는 탭 불가능하게 설정
+             */
             HStack(spacing: 59) {
                 ForEach(1...3, id: \.self) { stageNumber in
                     Button(action: { onStageTapped(stageNumber) }) {
@@ -41,12 +49,6 @@ struct StageCardView: View {
     }
     
     private func getStageStatus(for stage: Int) -> StageStatus {
-        // 유저가 더 높은 스테이지에 있다면 모든 단계가 completed
-        if userStage > currentStage {
-            return .completed
-        }
-        
-        // 현재 스테이지에서는 level로 상태 결정
         if stage < level {
             return .completed
         } else if stage == level {

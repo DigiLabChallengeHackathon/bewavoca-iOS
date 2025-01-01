@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct BottomView: View {
-    @EnvironmentObject private var userViewModel: UserViewModel
+    @Binding var userData: UserData
     @State private var showCharacterSelect = false
     
     var body: some View {
@@ -9,7 +9,7 @@ struct BottomView: View {
             Spacer()
             
             VStack {
-                Image("big_character_\(userViewModel.userData.character)")
+                Image("big_character_\(userData.character)")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 261, height: 321)
@@ -29,7 +29,17 @@ struct BottomView: View {
         .padding(.horizontal, 46)
         .padding(.bottom, 113)
         .fullScreenCover(isPresented: $showCharacterSelect) {
-            CharacterSelectionView()
+            CharacterSelectionView(
+                userClearedStage: userData.stage,
+                currentCharacter: userData.character,
+                updateCharacter: { selectedCharacter in
+                    userData.character = selectedCharacter
+                }
+            )
         }
     }
+}
+
+#Preview {
+    BottomView(userData: .constant(UserData(userId: 4, nickname: "김태인", character: 1, stage: 3, level: 1)))
 }
