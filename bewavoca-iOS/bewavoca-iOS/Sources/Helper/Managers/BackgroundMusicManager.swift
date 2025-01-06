@@ -19,9 +19,9 @@ final class BackgroundMusicManager {
 
         // 각 뷰에 맞는 음악을 설정
         switch viewName {
-        case "OnboardingView", "CreateNickNameView":
+        case "OnboardingView", "CreateNicknameView":
             musicType = .story
-        case "MainView", "StageView":
+        case "MainView", "StageView", "CharacterSelectionView":
             musicType = .main
         case "OXGameView", "MultipleChoiceGameView", "MatchingGameView":
             musicType = .quiz
