@@ -19,6 +19,7 @@ struct MultipleChoiceGameView: View {
                 }
             }
         }
+        .withBackgroundMusic(viewName: String(describing: Self.self))
     }
 }
 

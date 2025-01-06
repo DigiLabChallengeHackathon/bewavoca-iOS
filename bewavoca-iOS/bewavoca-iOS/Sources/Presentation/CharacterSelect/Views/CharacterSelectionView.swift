@@ -41,10 +41,12 @@ struct CharacterSelectionView: View {
         .onAppear {
             selectedCharacter = CharacterType(rawValue: userViewModel.userData.character) ?? .harbang
         }
+        .withBackgroundMusic(viewName: String(describing: Self.self))
     }
 }
 
 // MARK: - Preview
 #Preview {
     CharacterSelectionView()
+        .environmentObject(UserViewModel.mock)
 }

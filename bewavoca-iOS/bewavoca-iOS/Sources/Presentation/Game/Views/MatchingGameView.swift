@@ -11,10 +11,7 @@ struct MatchingGameView: View {
                     BackgroundRectangleView {
                         VStack {
                             MatchingGameTopView()
-                            MatchingGameBodyView(
-                                currentMatchState: $currentMatchState,
-                                stage: stage
-                            )
+                            MatchingGameBodyView(currentMatchState: $currentMatchState)
                             Spacer()
                         }
                         .background(Color.clear)
@@ -35,7 +32,7 @@ struct MatchingGameView: View {
                 .padding(.bottom, 41)
                 .padding(.trailing, 51)
             }
-        }
+        }.withBackgroundMusic(viewName: String(describing: Self.self))
     }
     
     private func getCharacterImageName(for state: CardState) -> String {
@@ -101,9 +98,6 @@ struct MatchingGameView: View {
         
         @Binding var currentMatchState: CardState
         
-        let stage: Stage
-        let gameType: GameType = .match
-        
         let quizzes: [MatchQuiz] = [
             MatchQuiz(matchId: 1, standard: "할아버지", jeju: "하르방"),
             MatchQuiz(matchId: 2, standard: "무지개", jeju: "상고"),
@@ -139,15 +133,14 @@ struct MatchingGameView: View {
                     progressBarManager.start()
                 }
                 .navigationDestination(isPresented: $isGameFinished) {
-                    ResultGameView(
-                        totalQuestions: quizzes.count,
-                        correctAnswers: matchedPairs,
-                        stage: stage,
-                        gameType: gameType
-                    )
+                    NextSampleGameView(test: "성공여부 -> \(quizzes.count) 중에 \(matchedPairs) 맞춤")
                 }
                 .padding(.top, 54)
             }
         }
     }
+}
+
+#Preview {
+    MatchingGameView(stage: .garden)
 }

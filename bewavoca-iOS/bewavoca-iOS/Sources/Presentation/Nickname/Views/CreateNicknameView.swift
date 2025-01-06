@@ -55,6 +55,7 @@ struct CreateNicknameView: View {
                 }
             }
             .ignoresSafeArea(.keyboard)
+            .withBackgroundMusic(viewName: String(describing: Self.self))
         }
     }
 }

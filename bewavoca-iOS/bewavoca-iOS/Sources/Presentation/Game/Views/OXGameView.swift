@@ -21,6 +21,7 @@ struct OXGameView: View {
                 }
             }
         }
+        .withBackgroundMusic(viewName: String(describing: Self.self))
     }
 }
 

@@ -57,6 +57,7 @@ struct StageView: View {
                 }
             }
         }
+        .withBackgroundMusic(viewName: String(describing: Self.self))
     }
 }
 
@@ -71,4 +72,5 @@ struct StageTitleView: View {
 
 #Preview {
     StageView()
+        .environmentObject(UserViewModel.mock)
 }
