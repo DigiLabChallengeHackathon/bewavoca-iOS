@@ -63,6 +63,7 @@ class TimeProgressBarManager: ObservableObject {
             .autoconnect()
             .sink { [weak self] _ in
                 guard let self = self else { return }
+                SoundManager.shared.playEffectContinuously(.timer)
                 self.elapsedTime += 1
                 self.remainingTime = max(self.duration - self.elapsedTime, 0)
                 self.progress = self.elapsedTime / self.duration
@@ -76,10 +77,12 @@ class TimeProgressBarManager: ObservableObject {
     }
 
     func pause() {
+        SoundManager.shared.stopEffect(.timer)
         timerCancellable?.cancel()
     }
 
     func reset() {
+        SoundManager.shared.stopEffect(.timer)
         timerCancellable?.cancel()
         elapsedTime = 0.0
         remainingTime = duration
@@ -88,6 +91,7 @@ class TimeProgressBarManager: ObservableObject {
     }
 
     private func stop() {
+        SoundManager.shared.stopEffect(.timer)
         timerCancellable?.cancel()
         isWarning = false
     }
