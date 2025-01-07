@@ -80,11 +80,7 @@ struct OXGameBodyView: View {
     
     @StateObject private var progressBarManager = TimeProgressBarManager(duration: 15, warningTime: 5)
     
-    @State private var shuffledQuizzes: [OXQuiz] = [
-        OXQuiz(oxId: 8, question: "[바나나]는 제주어로 바나나다", correctAnswer: true, explanation: "바나나는 제주어로 A입니다.", voice: nil),
-        OXQuiz(oxId: 9, question: "[딸기]는 제주어로 딸기가 아니다", correctAnswer: false, explanation: "딸기는 제주어로 B가 아닙니다.", voice: nil),
-        OXQuiz(oxId: 10, question: "[한라봉]은 제주도의 대표 과일이다", correctAnswer: true, explanation: "한라봉은 제주도의 대표 과일로 유명합니다.", voice: nil)
-    ]
+    @State private var shuffledQuizzes: [OXQuiz] = OXQuizListViewModel.mockData().data.quizzes
     
     @State private var isOXGameFinished = false // 게임완료 여부
     @State private var isButtonDisabled = false // 버튼비활성화 여부
@@ -137,9 +133,13 @@ struct OXGameBodyView: View {
             Spacer()
             
             OXCardButtonView(selectedAnswer: $selectedAnswer, correctAnswer: shuffledQuizzes[currentQuizIndex].correctAnswer ? .O : .X) { selectedAnswer in
+                
                 self.selectedAnswer = selectedAnswer
                 self.isTimeOver = true
                 self.isButtonDisabled = true
+                
+                SoundManager.shared.playEffect(self.selectedAnswer == .O ? .correct : .incorrect)
+                
                 progressBarManager.pause()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     self.isButtonDisabled = false
@@ -167,6 +167,7 @@ struct OXGameBodyView: View {
             progressBarManager.start()
         }
     }
+    
     
     private func moveToNextQuiz() {
         if selectedAnswer != nil {

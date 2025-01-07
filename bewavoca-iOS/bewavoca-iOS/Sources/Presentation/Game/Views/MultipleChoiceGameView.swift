@@ -145,7 +145,10 @@ struct MultipleGameBodyView: View {
     
     private func handleAnswerSelection(selectedIndex: Int) {
         if quizzes[currentQuizIndex].options[selectedIndex] == quizzes[currentQuizIndex].correctAnswer {
+            SoundManager.shared.playEffect(.correct)
             correctCount += 1
+        }else{
+            SoundManager.shared.playEffect(.incorrect)
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {

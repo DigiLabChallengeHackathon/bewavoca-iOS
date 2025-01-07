@@ -38,8 +38,10 @@ struct MatchingGameView: View {
     private func getCharacterImageName(for state: CardState) -> String {
         switch state {
         case .correct:
+            SoundManager.shared.playEffect(.correct)
             return "image_match_character_1_correct"
         case .incorrect:
+            SoundManager.shared.playEffect(.incorrect)
             return "image_match_character_1_incorrect"
         default:
             return "image_match_character_1_default"
