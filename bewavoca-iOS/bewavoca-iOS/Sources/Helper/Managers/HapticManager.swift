@@ -1,16 +1,5 @@
 import UIKit
 
-enum HapticType {
-    case impact(ImpactType)
-    case selection
-    case tap
-    case none
-}
-
-enum ImpactType {
-    case light, medium, heavy, soft, rigid
-}
-
 final class HapticManager {
     static let shared = HapticManager()
     private init() {}

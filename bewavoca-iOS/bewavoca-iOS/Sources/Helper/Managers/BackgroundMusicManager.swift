@@ -7,12 +7,6 @@ final class BackgroundMusicManager {
     private var currentMusic: BackgroundMusic?
     private var audioPlayer: AVAudioPlayer?
 
-    enum BackgroundMusic: String, Equatable {
-        case story = "background_story"
-        case main = "background_main"
-        case quiz = "background_quiz"
-    }
-
     // 뷰 이름에 맞는 음악을 처리하는 함수
     func handleBackgroundMusic(for viewName: String) {
         let musicType: BackgroundMusic

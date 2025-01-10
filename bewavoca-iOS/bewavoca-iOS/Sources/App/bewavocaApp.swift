@@ -11,7 +11,7 @@ import SwiftUI
 struct bewavocaApp: App {
     var body: some Scene {
         WindowGroup {
-            AppEntryView()
+            AppStatusView()
         }
     }
 }
