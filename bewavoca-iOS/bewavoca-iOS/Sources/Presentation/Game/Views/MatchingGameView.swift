@@ -1,37 +1,35 @@
 import SwiftUI
 
 struct MatchingGameView: View {
+    @EnvironmentObject private var navigationPathManger : NavigationPathManager
     @State var currentMatchState: CardState = .defaultState
-    let stage: Stage
     
     var body: some View {
-        NavigationStack {
-            DeviceScaledView {
-                ZStack {
-                    BackgroundRectangleView {
-                        VStack {
-                            MatchingGameTopView()
-                            MatchingGameBodyView(currentMatchState: $currentMatchState)
-                            Spacer()
-                        }
-                        .background(Color.clear)
-                    }
-                }
-                
-                VStack {
-                    Spacer()
-                    HStack {
+        DeviceScaledView {
+            ZStack {
+                BackgroundRectangleView {
+                    VStack {
+                        MatchingGameTopView()
+                        MatchingGameBodyView(currentMatchState: $currentMatchState)
                         Spacer()
-                        Image(getCharacterImageName(for: currentMatchState))
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 275, height: 338)
                     }
+                    .background(Color.clear)
                 }
-                .frame(width: 1366, height: 1024)
-                .padding(.bottom, 41)
-                .padding(.trailing, 51)
             }
+            
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Image(getCharacterImageName(for: currentMatchState))
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 275, height: 338)
+                }
+            }
+            .frame(width: 1366, height: 1024)
+            .padding(.bottom, 41)
+            .padding(.trailing, 51)
         }.withBackgroundMusic(viewName: String(describing: Self.self))
     }
     
@@ -96,6 +94,7 @@ struct MatchingGameView: View {
     }
     
     private struct MatchingGameBodyView: View {
+        @EnvironmentObject private var navigationPathManger : NavigationPathManager
         @StateObject private var progressBarManager = TimeProgressBarManager(duration: 15, warningTime: 5)
         
         @Binding var currentMatchState: CardState
@@ -134,9 +133,12 @@ struct MatchingGameView: View {
                 .onAppear {
                     progressBarManager.start()
                 }
-                .navigationDestination(isPresented: $isGameFinished) {
-                    NextSampleGameView(test: "성공여부 -> \(quizzes.count) 중에 \(matchedPairs) 맞춤")
-                }
+                .onChange(of: isGameFinished, { _, newValue in
+                    if newValue {
+                        navigationPathManger.updateResultInfo(totalCount: quizzes.count, correntCount: matchedPairs)
+                        navigationPathManger.navigationPath.append(AppDestination.resultGame)
+                    }
+                })
                 .padding(.top, 54)
             }
         }
@@ -144,5 +146,5 @@ struct MatchingGameView: View {
 }
 
 #Preview {
-    MatchingGameView(stage: .garden)
+    MatchingGameView()
 }

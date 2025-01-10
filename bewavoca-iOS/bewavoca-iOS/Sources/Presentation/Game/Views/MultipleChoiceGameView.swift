@@ -1,22 +1,20 @@
 import SwiftUI
 
 struct MultipleChoiceGameView: View {
-    let stage: Stage
+    @EnvironmentObject private var navigationPathManger : NavigationPathManager
     
     var body: some View {
         DeviceScaledView {
             BackgroundRectangleView {
-                NavigationStack {
-                    VStack {
-                        MultipleGameTopView()
-                        
-                        MultipleGameBodyView(stage: stage)
-                        
-                        Spacer()
-                    }
-                    .background(Color.clear)
-                    .padding(.top, 54)
+                VStack {
+                    MultipleGameTopView()
+                    
+                    MultipleGameBodyView()
+                    
+                    Spacer()
                 }
+                .background(Color.clear)
+                .padding(.top, 54)
             }
         }
         .withBackgroundMusic(viewName: String(describing: Self.self))
@@ -27,10 +25,10 @@ struct MultipleChoiceGameView: View {
 struct MultipleGameTopView: View {
     var body: some View {
         HStack {
-            // 1. NavigationLink (왼쪽 정렬)
-            NavigationLink(destination: NextSampleGameView(test: "뒤로 가는 페이지")) {
-                Image("btn_back")
-            }
+            // 1. NavigationLink (왼쪽 정렬) @@수정
+            //            NavigationLink(destination: NextSampleGameView(test: "뒤로 가는 페이지")) {
+            //                Image("btn_back")
+            //            }
             
             Spacer()
             
@@ -62,8 +60,7 @@ struct MultipleGameTopView: View {
 }
 
 struct MultipleGameBodyView: View {
-    let stage: Stage
-    let gameType: GameType = .choice
+    @EnvironmentObject private var navigationPathManger : NavigationPathManager
     
     @State private var currentQuizIndex: Int = 0
     @State private var selectedAnswer: Int? = nil
@@ -130,14 +127,12 @@ struct MultipleGameBodyView: View {
             .disabled(isButtonDisabled)
         }
         .padding()
-        .navigationDestination(isPresented: $isGameFinished) {
-            ResultGameView(
-                totalQuestions: quizzes.count,
-                correctAnswers: correctCount,
-                stage: stage,
-                gameType: gameType
-            )
-        }
+        .onChange(of: isGameFinished, { _, newValue in
+            if newValue {
+                navigationPathManger.updateResultInfo(totalCount: quizzes.count, correntCount: correctCount)
+                navigationPathManger.navigationPath.append(AppDestination.resultGame)
+            }
+        })
         .onAppear {
             progressBarManager.start() // 타이머 시작
         }
@@ -172,5 +167,7 @@ struct MultipleGameBodyView: View {
 
 
 #Preview {
-    MultipleChoiceGameView(stage: .garden)
+    NavigationStack {
+        MultipleChoiceGameView()
+    }.environmentObject(NavigationPathManager(userViewModel: UserViewModel.mock))
 }

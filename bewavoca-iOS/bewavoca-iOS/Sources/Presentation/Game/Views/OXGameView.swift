@@ -1,24 +1,18 @@
 import SwiftUI
 
 struct OXGameView: View {
-    @EnvironmentObject private var userViewModel: UserViewModel
-    let stage: Stage
+    @EnvironmentObject private var navigationPathManger : NavigationPathManager
     
     var body: some View {
         DeviceScaledView {
             BackgroundRectangleView {
-                NavigationStack {
-                    VStack {
-                        OXGameTopView()
-                        OXGameBodyView(
-                            stage: stage,
-                            gameType: .ox
-                        )
-                        Spacer()
-                    }
-                    .background(Color.clear)
-                    .padding(.top, 54)
+                VStack {
+                    OXGameTopView()
+                    OXGameBodyView()
+                    Spacer()
                 }
+                .background(Color.clear)
+                .padding(.top, 54)
             }
         }
         .withBackgroundMusic(viewName: String(describing: Self.self))
@@ -28,11 +22,11 @@ struct OXGameView: View {
 struct OXGameTopView: View {
     var body: some View {
         HStack {
-            // 1. NavigationLink (왼쪽 정렬)
-            NavigationLink(destination: NextSampleGameView(test: "뒤로 가는 페이지")) {
-                Image("btn_back")
-                    .foregroundColor(.blue)
-            }
+            // 1. NavigationLink (왼쪽 정렬) @@수정
+            //            NavigationLink(destination: NextSampleGameView(test: "뒤로 가는 페이지")) {
+            //                Image("btn_back")
+            //                    .foregroundColor(.blue)
+            //            }
             
             Spacer()
             
@@ -67,9 +61,7 @@ struct OXGameTopView: View {
 
 
 struct OXGameBodyView: View {
-    let stage: Stage
-    let gameType: GameType
-    
+    @EnvironmentObject private var navigationPathManger : NavigationPathManager
     @State private var currentQuizIndex: Int = 0
     @State private var correctCount: Int = 0 // 맞춘 갯수 바인딩(API로 보낼 예정)
     
@@ -138,7 +130,7 @@ struct OXGameBodyView: View {
                 self.isTimeOver = true
                 self.isButtonDisabled = true
                 
-                SoundManager.shared.playEffect(self.selectedAnswer == .O ? .correct : .incorrect)
+                SoundManager.shared.playEffect((self.selectedAnswer != nil) == shuffledQuizzes[currentQuizIndex].correctAnswer ? .correct : .incorrect)
                 
                 progressBarManager.pause()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -149,14 +141,12 @@ struct OXGameBodyView: View {
             }
             .padding(.bottom, 132)
             .disabled(isButtonDisabled)
-            .navigationDestination(isPresented: $isOXGameFinished) {
-                ResultGameView(
-                    totalQuestions: shuffledQuizzes.count,
-                    correctAnswers: correctCount,
-                    stage: stage,
-                    gameType: gameType
-                )
-            }
+            .onChange(of: isOXGameFinished, { _, newValue in
+                if newValue {
+                    navigationPathManger.updateResultInfo(totalCount: shuffledQuizzes.count, correntCount: correctCount)
+                    navigationPathManger.navigationPath.append(AppDestination.resultGame)
+                }
+            })
             
         }
         .frame(alignment: .top)
@@ -188,5 +178,7 @@ struct OXGameBodyView: View {
 }
 
 #Preview {
-    OXGameView(stage: .garden)
+    NavigationStack {
+        OXGameView()
+    }.environmentObject(NavigationPathManager(userViewModel: UserViewModel.mock))
 }
