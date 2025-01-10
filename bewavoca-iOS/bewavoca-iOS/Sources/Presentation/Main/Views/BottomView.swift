@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct BottomView: View {
-    @EnvironmentObject private var userViewModel: UserViewModel
+    @EnvironmentObject private var navigationPathManger : NavigationPathManager
     @State private var showCharacterSelect = false
     
     var body: some View {
@@ -9,7 +9,7 @@ struct BottomView: View {
             Spacer()
             
             VStack {
-                Image("big_character_\(userViewModel.userData.character)")
+                Image("big_character_\(navigationPathManger.userViewModel.userData.character)")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 261, height: 321)
