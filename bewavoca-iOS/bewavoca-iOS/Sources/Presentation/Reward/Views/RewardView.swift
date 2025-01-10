@@ -15,6 +15,7 @@
 import SwiftUI
 
 struct RewardView: View {
+    @EnvironmentObject private var navigationPathManger : NavigationPathManager
     @Environment(\.dismiss) private var dismiss
     let characterType: CharacterType
     @State private var currentPage = 0

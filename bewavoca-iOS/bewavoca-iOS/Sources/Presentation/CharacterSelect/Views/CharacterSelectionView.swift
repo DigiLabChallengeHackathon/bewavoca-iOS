@@ -12,8 +12,9 @@
 import SwiftUI
 
 struct CharacterSelectionView: View {
+    @EnvironmentObject private var navigationPathManger : NavigationPathManager
+    
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var userViewModel: UserViewModel
     @State private var selectedCharacter: CharacterType = .harbang
     
     var body: some View {
@@ -24,14 +25,14 @@ struct CharacterSelectionView: View {
                 VStack(spacing: 50) {
                     CharacterIntroductionView(
                         character: selectedCharacter,
-                        currentCharacter: userViewModel.userData.character,
+                        currentCharacter: navigationPathManger.userViewModel.userData.character,
                         updateCharacter: { selected in
-                            userViewModel.userData.character = selected
+                            navigationPathManger.userViewModel.userData.character = selected
                         }
                     )
                     CharacterGridView(
                         selectedCharacter: $selectedCharacter,
-                        userClearedStage: userViewModel.userData.stage
+                        userClearedStage: navigationPathManger.userViewModel.userData.stage
                     )
                 }
                 
@@ -39,7 +40,7 @@ struct CharacterSelectionView: View {
             }
         }
         .onAppear {
-            selectedCharacter = CharacterType(rawValue: userViewModel.userData.character) ?? .harbang
+            selectedCharacter = CharacterType(rawValue: navigationPathManger.userViewModel.userData.character) ?? .harbang
         }
         .withBackgroundMusic(viewName: String(describing: Self.self))
     }
@@ -47,6 +48,8 @@ struct CharacterSelectionView: View {
 
 // MARK: - Preview
 #Preview {
-    CharacterSelectionView()
-        .environmentObject(UserViewModel.mock)
+    NavigationStack {
+        CharacterSelectionView()
+        }.environmentObject(NavigationPathManager(userViewModel: UserViewModel.mock))
+    
 }
