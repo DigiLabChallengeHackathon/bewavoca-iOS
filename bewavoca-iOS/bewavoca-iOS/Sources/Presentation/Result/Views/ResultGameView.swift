@@ -1,26 +1,26 @@
 import SwiftUI
 
 struct ResultGameView: View {
-    @EnvironmentObject private var navigationPathManger: NavigationPathManager
+    @EnvironmentObject private var navigationPathManager: NavigationPathManager
     @Environment(\.dismiss) private var dismiss
     @State private var isShowingRewardView = false
     
     var body: some View {
         DeviceScaledView {
             ResultContentView(
-                navigationPathManger: navigationPathManger,
+                navigationPathManager: navigationPathManager,
                 dismiss: dismiss,
                 isShowingRewardView: $isShowingRewardView
             )
         }
         .fullScreenCover(isPresented: $isShowingRewardView) {
-            RewardView(characterType: .getCharacterType(for: navigationPathManger.currentGameInfo.stage!))
+            RewardView(characterType: .getCharacterType(for: navigationPathManager.currentGameInfo.stage))
         }
     }
 }
 
 struct ResultContentView: View {
-    let navigationPathManger: NavigationPathManager
+    let navigationPathManager: NavigationPathManager
     let dismiss: DismissAction
     @Binding var isShowingRewardView: Bool
     
@@ -28,7 +28,7 @@ struct ResultContentView: View {
         VStack {
             TitleSection()
             ResultSection(
-                navigationPathManger: navigationPathManger,
+                navigationPathManager: navigationPathManager,
                 dismiss: dismiss,
                 isShowingRewardView: $isShowingRewardView
             )
@@ -48,7 +48,7 @@ struct TitleSection: View {
 }
 
 struct ResultSection: View {
-    let navigationPathManger: NavigationPathManager
+    let navigationPathManager: NavigationPathManager
     let dismiss: DismissAction
     @Binding var isShowingRewardView: Bool
     
@@ -56,13 +56,13 @@ struct ResultSection: View {
         ZStack(alignment: .top) {
             BackgroundResizeRectangleView(width: 812, height: 554) {
                 ResultDetailsView(
-                    navigationPathManger: navigationPathManger,
+                    navigationPathManager: navigationPathManager,
                     dismiss: dismiss,
                     isShowingRewardView: $isShowingRewardView
                 )
             }
             
-            RibbonImage(stage: navigationPathManger.currentGameInfo.stage!)
+            RibbonImage(stage: navigationPathManager.currentGameInfo.stage)
         }
     }
 }
@@ -81,7 +81,7 @@ struct RibbonImage: View {
 }
 
 struct ResultDetailsView: View {
-    let navigationPathManger: NavigationPathManager
+    let navigationPathManager: NavigationPathManager
     let dismiss: DismissAction
     @Binding var isShowingRewardView: Bool
     
@@ -90,7 +90,7 @@ struct ResultDetailsView: View {
             HStack(alignment: .top) {
                 VStack {
                     Spacer()
-                    Image("image_result_character_big_\(navigationPathManger.userViewModel.userData.character)")
+                    Image("image_result_character_big_\(navigationPathManager.userViewModel.userData.character)")
                         .resizable()
                         .scaledToFit()
                         .frame(height: 438)
@@ -98,7 +98,7 @@ struct ResultDetailsView: View {
                         .padding(.top, 42)
                 }
                 ResultInfoView(
-                    navigationPathManger: navigationPathManger,
+                    navigationPathManager: navigationPathManager,
                     dismiss: dismiss,
                     isShowingRewardView: $isShowingRewardView
                 )
@@ -111,7 +111,7 @@ struct ResultDetailsView: View {
 
 
 struct ResultInfoView: View {
-    let navigationPathManger: NavigationPathManager
+    let navigationPathManager: NavigationPathManager
     let dismiss: DismissAction
     @Binding var isShowingRewardView: Bool
     
@@ -119,9 +119,9 @@ struct ResultInfoView: View {
         VStack {
             GameLevelText(level: getGameLevel())
             ResultMessageBox(message: getResultMessage())
-            ScoreText(result: navigationPathManger.currentResultInfo)
+            ScoreText(result: navigationPathManager.currentResultInfo)
             ConfirmButton(
-                navigationPathManger: navigationPathManger,
+                navigationPathManager: navigationPathManager,
                 dismiss: dismiss,
                 isShowingRewardView: $isShowingRewardView
             )
@@ -131,11 +131,11 @@ struct ResultInfoView: View {
     }
     
     private func getGameLevel() -> Int {
-        return navigationPathManger.currentGameInfo.game!.level
+        return navigationPathManager.currentGameInfo.game.level
     }
     
     private func getResultMessage() -> String {
-        if navigationPathManger.currentResultInfo.correntCount >= navigationPathManger.currentResultInfo.totalCount / 2 {
+        if navigationPathManager.currentResultInfo.correntCount >= navigationPathManager.currentResultInfo.totalCount / 2 {
             return "대단해요"
         } else {
             return "아쉬워요"
@@ -191,7 +191,7 @@ struct ScoreText: View {
 }
 
 struct ConfirmButton: View {
-    let navigationPathManger: NavigationPathManager
+    let navigationPathManager: NavigationPathManager
     let dismiss: DismissAction
     @Binding var isShowingRewardView: Bool
     
@@ -206,21 +206,20 @@ struct ConfirmButton: View {
     }
     
     private func handleConfirmAction() {
-        let correctRatio = Double(navigationPathManger.currentResultInfo.correntCount) /
-        Double(navigationPathManger.currentResultInfo.totalCount)
+        let correctRatio = Double(navigationPathManager.currentResultInfo.correntCount) / Double(navigationPathManager.currentResultInfo.totalCount)
         
         if correctRatio >= 0.5 {
-            let stageIncreased = navigationPathManger.userViewModel.checkAndUpdateProgress(
-                clearedStage: navigationPathManger.currentGameInfo.stage!.index,
-                clearedLevel: navigationPathManger.currentGameInfo.game!.level
+            let stageIncreased = navigationPathManager.userViewModel.checkAndUpdateProgress(
+                clearedStage: navigationPathManager.currentGameInfo.stage.index,
+                clearedLevel: navigationPathManager.currentGameInfo.game.level
             )
             if stageIncreased {
                 isShowingRewardView = true
             } else {
-                dismiss()
+                navigationPathManager.navigationPath.append(AppDestination.reward)
             }
         } else {
-            dismiss()
+            navigationPathManager.resetToMainView()
         }
     }
 }

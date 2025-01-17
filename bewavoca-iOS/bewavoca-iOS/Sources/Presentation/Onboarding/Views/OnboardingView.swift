@@ -13,7 +13,7 @@ import SwiftUI
 
 // 뷰 전환간 애니메이션은 일단 넣지 않았습니다.
 struct OnboardingView: View {
-    @EnvironmentObject private var navigationPathManger : NavigationPathManager
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     
     @State private var currentPage: OnboardingPage = .page1
     @State private var isShowingNicknameView = false

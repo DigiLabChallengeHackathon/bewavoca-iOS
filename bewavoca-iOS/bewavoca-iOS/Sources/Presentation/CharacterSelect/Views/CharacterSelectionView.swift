@@ -12,7 +12,7 @@
 import SwiftUI
 
 struct CharacterSelectionView: View {
-    @EnvironmentObject private var navigationPathManger : NavigationPathManager
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     
     @Environment(\.dismiss) private var dismiss
     @State private var selectedCharacter: CharacterType = .harbang
@@ -25,14 +25,14 @@ struct CharacterSelectionView: View {
                 VStack(spacing: 50) {
                     CharacterIntroductionView(
                         character: selectedCharacter,
-                        currentCharacter: navigationPathManger.userViewModel.userData.character,
+                        currentCharacter: navigationPathManager.userViewModel.userData.character,
                         updateCharacter: { selected in
-                            navigationPathManger.userViewModel.userData.character = selected
+                            navigationPathManager.userViewModel.userData.character = selected
                         }
                     )
                     CharacterGridView(
                         selectedCharacter: $selectedCharacter,
-                        userClearedStage: navigationPathManger.userViewModel.userData.stage
+                        userClearedStage: navigationPathManager.userViewModel.userData.stage
                     )
                 }
                 
@@ -40,7 +40,7 @@ struct CharacterSelectionView: View {
             }
         }
         .onAppear {
-            selectedCharacter = CharacterType(rawValue: navigationPathManger.userViewModel.userData.character) ?? .harbang
+            selectedCharacter = CharacterType(rawValue: navigationPathManager.userViewModel.userData.character) ?? .harbang
         }
         .withBackgroundMusic(viewName: String(describing: Self.self))
     }

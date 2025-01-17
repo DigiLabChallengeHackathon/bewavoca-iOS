@@ -1,12 +1,12 @@
 import SwiftUI
 
 struct TopView: View {
-    @EnvironmentObject private var navigationPathManger : NavigationPathManager
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     
     var body: some View {
         HStack {
             VStackLayout(alignment: .leading) {
-                ProfileCard(character: navigationPathManger.userViewModel.userData.character, nickName: navigationPathManger.userViewModel.userData.nickname)
+                ProfileCard(character: navigationPathManager.userViewModel.userData.character, nickName: navigationPathManager.userViewModel.userData.nickname)
                 
                 NavigationLink(destination: NextSampleGameView(test: "설정")) {
                     Image("btn_setting")

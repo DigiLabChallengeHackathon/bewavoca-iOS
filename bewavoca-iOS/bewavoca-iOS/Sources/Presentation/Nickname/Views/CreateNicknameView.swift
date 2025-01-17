@@ -15,7 +15,7 @@ import SwiftUI
 ///   - `NicknameCardView`를 통해 닉네임 입력을 받음.
 ///   - 닉네임이 입력되면 `시작` 버튼이 활성화되어 다음 화면으로 진행할 수 있음.
 struct CreateNicknameView: View {
-    @EnvironmentObject private var navigationPathManger : NavigationPathManager
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     @State private var nickname: String = ""
     @State private var isButtonPressed: Bool = false
     
@@ -43,9 +43,9 @@ struct CreateNicknameView: View {
                         isButtonPressed: $isButtonPressed,
                         isButtonEnabled: isButtonEnabled,
                         action: {
-                            navigationPathManger.userViewModel.setNickname(nickname)
+                            navigationPathManager.userViewModel.setNickname(nickname)
                             
-                            navigationPathManger.navigationPath.append(AppDestination.main)
+                            navigationPathManager.navigationPath.append(AppDestination.main)
                         }
                     )
                 }

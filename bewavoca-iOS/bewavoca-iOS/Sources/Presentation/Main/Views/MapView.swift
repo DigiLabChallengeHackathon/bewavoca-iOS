@@ -7,7 +7,7 @@ import SwiftUI
 
 
 struct MapView: View {
-    @EnvironmentObject private var navigationPathManger : NavigationPathManager
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     
     private let stages: [(Stage, AnyShape, String, Color)] = [
         (.garden, AnyShape(GardenPathShape()), "garden", Color("myRed")),
@@ -27,8 +27,8 @@ struct MapView: View {
                 // 각 버튼에 따라 NextSampleView 화면 전환
                 
                 Button(action: {
-                    navigationPathManger.updateStage(to: stage)
-                    navigationPathManger.navigationPath.append(AppDestination.stage)
+                    navigationPathManager.updateStage(to: stage)
+                    navigationPathManager.navigationPath.append(AppDestination.stage)
                 }) {
                     ImageMapButtonView(
                         shape: shape,
@@ -39,8 +39,8 @@ struct MapView: View {
                         // isActive: userData.stage + 1 == stage.index
                         
                         // 변경 로직 - stage가 현재 도전하는 스테이지
-                        isOpen: navigationPathManger.userViewModel.userData.stage > stage.index,
-                        isActive: navigationPathManger.userViewModel.userData.stage == stage.index
+                        isOpen: navigationPathManager.userViewModel.userData.stage > stage.index,
+                        isActive: navigationPathManager.userViewModel.userData.stage == stage.index
                     )
                 }
                 .buttonStyle(BaseButtonStyle())

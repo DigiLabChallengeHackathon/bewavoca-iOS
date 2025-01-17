@@ -1,13 +1,13 @@
 import SwiftUI
 
 struct OXGameView: View {
-    @EnvironmentObject private var navigationPathManger : NavigationPathManager
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     
     var body: some View {
         DeviceScaledView {
             BackgroundRectangleView {
                 VStack {
-                    OXGameTopView()
+                    OXGameTopView(navigationPathManager:navigationPathManager)
                     OXGameBodyView()
                     Spacer()
                 }
@@ -20,13 +20,15 @@ struct OXGameView: View {
 }
 
 struct OXGameTopView: View {
+    let navigationPathManager : NavigationPathManager
     var body: some View {
         HStack {
-            // 1. NavigationLink (왼쪽 정렬) @@수정
-            //            NavigationLink(destination: NextSampleGameView(test: "뒤로 가는 페이지")) {
-            //                Image("btn_back")
-            //                    .foregroundColor(.blue)
-            //            }
+            Button(action: {
+                navigationPathManager.navigationPath.removeLast() // go to StageView
+            }){
+                Image("btn_back")
+                    .foregroundColor(.blue)
+            }
             
             Spacer()
             
@@ -61,7 +63,7 @@ struct OXGameTopView: View {
 
 
 struct OXGameBodyView: View {
-    @EnvironmentObject private var navigationPathManger : NavigationPathManager
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     @State private var currentQuizIndex: Int = 0
     @State private var correctCount: Int = 0 // 맞춘 갯수 바인딩(API로 보낼 예정)
     
@@ -143,8 +145,8 @@ struct OXGameBodyView: View {
             .disabled(isButtonDisabled)
             .onChange(of: isOXGameFinished, { _, newValue in
                 if newValue {
-                    navigationPathManger.updateResultInfo(totalCount: shuffledQuizzes.count, correntCount: correctCount)
-                    navigationPathManger.navigationPath.append(AppDestination.resultGame)
+                    navigationPathManager.updateResultInfo(totalCount: shuffledQuizzes.count, correntCount: correctCount)
+                    navigationPathManager.navigationPath.append(AppDestination.resultGame)
                 }
             })
             

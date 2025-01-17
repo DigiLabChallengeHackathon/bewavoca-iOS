@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct LoadingView: View {
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
+    
     var body: some View {
         VStack {
             RabongLoadingView()
@@ -10,10 +12,27 @@ struct LoadingView: View {
                 .foregroundColor(Color("myDarkBlue"))
                 .padding(.top, 41)
             
-        }.background(Color.white)
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                checkUserInfo()
+            }
+        }
+        .background(Color.white)
+        .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(true)
+    }
+    
+    func checkUserInfo() {
+        if navigationPathManager.userViewModel.userData.nickname.isEmpty {
+            navigationPathManager.navigationPath.append(AppDestination.onboarding)
+        } else {
+            navigationPathManager.navigationPath.append(AppDestination.main)
+        }
     }
 }
 
 #Preview {
-    LoadingView()
+    LoadingView().environmentObject(NavigationPathManager(userViewModel: UserViewModel.mock))
 }
+

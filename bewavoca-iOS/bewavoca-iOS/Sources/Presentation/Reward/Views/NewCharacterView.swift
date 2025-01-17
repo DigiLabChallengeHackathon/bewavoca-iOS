@@ -11,14 +11,14 @@
 import SwiftUI
 
 struct NewCharacterView: View {
-    @Environment(\.dismiss) private var dismiss
     let characterType: CharacterType
+    
+    
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     
     private var unlockedCharacter: UnlockedCharacterContent.Character {
         UnlockedCharacterContent.characters[characterType]!
     }
-    
-    @State private var shouldShowMain = false
     
     var body: some View {
         DeviceScaledView{
@@ -35,7 +35,7 @@ struct NewCharacterView: View {
                         .frame(width: 495)
                     
                     Button {
-                        shouldShowMain = true
+                        navigationPathManager.resetToMainView()
                     } label: {
                         Image("btn_confirm")
                             .frame(width: 201)
@@ -43,13 +43,12 @@ struct NewCharacterView: View {
                 }
                 .padding(.top, 30)
             }
-            .fullScreenCover(isPresented: $shouldShowMain) {
-                MainView()
-            }
         }
     }
 }
 
 #Preview {
-    NewCharacterView(characterType: .dongbaek)
+    NavigationStack {
+        NewCharacterView(characterType: .dongbaek)
+    }.environmentObject(NavigationPathManager(userViewModel: UserViewModel.mock))
 }

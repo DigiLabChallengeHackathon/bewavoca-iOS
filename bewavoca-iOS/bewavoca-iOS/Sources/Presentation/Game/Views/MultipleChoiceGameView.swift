@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MultipleChoiceGameView: View {
-    @EnvironmentObject private var navigationPathManger : NavigationPathManager
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     
     var body: some View {
         DeviceScaledView {
@@ -60,7 +60,7 @@ struct MultipleGameTopView: View {
 }
 
 struct MultipleGameBodyView: View {
-    @EnvironmentObject private var navigationPathManger : NavigationPathManager
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     
     @State private var currentQuizIndex: Int = 0
     @State private var selectedAnswer: Int? = nil
@@ -129,8 +129,8 @@ struct MultipleGameBodyView: View {
         .padding()
         .onChange(of: isGameFinished, { _, newValue in
             if newValue {
-                navigationPathManger.updateResultInfo(totalCount: quizzes.count, correntCount: correctCount)
-                navigationPathManger.navigationPath.append(AppDestination.resultGame)
+                navigationPathManager.updateResultInfo(totalCount: quizzes.count, correntCount: correctCount)
+                navigationPathManager.navigationPath.append(AppDestination.resultGame)
             }
         })
         .onAppear {

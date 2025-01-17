@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MainView: View {
-    @EnvironmentObject private var navigationPathManger : NavigationPathManager
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     
     var body: some View {
         DeviceScaledView {
@@ -25,8 +25,8 @@ struct MainView: View {
         }
         .onAppear(){
             // 게임 설정 초기화
-            navigationPathManger.resetGameInfo()
-            navigationPathManger.resetResultInfo()
+            navigationPathManager.resetGameInfo()
+            navigationPathManager.resetResultInfo()
             
         }
     }

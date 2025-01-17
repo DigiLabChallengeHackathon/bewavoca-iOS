@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct NextSampleGameView: View {
-    @EnvironmentObject private var navigationPathManger : NavigationPathManager
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     @Environment(\.presentationMode) var presentationMode
     
     var test: String

@@ -15,7 +15,7 @@
 import SwiftUI
 
 struct StageView: View {
-    @EnvironmentObject private var navigationPathManger : NavigationPathManager
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     @Environment(\.dismiss) private var dismiss
     @State private var selectedStage: Int?
     
@@ -27,22 +27,22 @@ struct StageView: View {
                 
                 StageCardView(
                     currentStage: 1,
-                    userStage: navigationPathManger.userViewModel.userData.stage,
-                    level: navigationPathManger.userViewModel.userData.level,
+                    userStage: navigationPathManager.userViewModel.userData.stage,
+                    level: navigationPathManager.userViewModel.userData.level,
                     onBackTapped: {
                         dismiss()
                     },
                     onStageTapped: { stageNumber in
                         switch stageNumber {
                         case 1:
-                            navigationPathManger.updateType(to: GameType.ox)
-                            navigationPathManger.navigationPath.append(AppDestination.oxGame)
+                            navigationPathManager.updateType(to: GameType.ox)
+                            navigationPathManager.navigationPath.append(AppDestination.oxGame)
                         case 2:
-                            navigationPathManger.updateType(to: GameType.choice)
-                            navigationPathManger.navigationPath.append(AppDestination.multipleChoiceGame)
+                            navigationPathManager.updateType(to: GameType.choice)
+                            navigationPathManager.navigationPath.append(AppDestination.multipleChoiceGame)
                         case 3:
-                            navigationPathManger.updateType(to: GameType.match)
-                            navigationPathManger.navigationPath.append(AppDestination.matchingGame)
+                            navigationPathManager.updateType(to: GameType.match)
+                            navigationPathManager.navigationPath.append(AppDestination.matchingGame)
                         default:
                             return
                         }

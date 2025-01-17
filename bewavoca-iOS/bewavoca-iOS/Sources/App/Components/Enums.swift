@@ -7,6 +7,7 @@
 
 // MARK: AppStatusView 
 enum AppDestination: Hashable {
+    case loading
     case main
     case onboarding
     case stage

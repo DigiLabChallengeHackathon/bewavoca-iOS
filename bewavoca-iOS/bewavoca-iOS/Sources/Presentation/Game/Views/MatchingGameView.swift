@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MatchingGameView: View {
-    @EnvironmentObject private var navigationPathManger : NavigationPathManager
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     @State var currentMatchState: CardState = .defaultState
     
     var body: some View {
@@ -94,7 +94,7 @@ struct MatchingGameView: View {
     }
     
     private struct MatchingGameBodyView: View {
-        @EnvironmentObject private var navigationPathManger : NavigationPathManager
+        @EnvironmentObject private var navigationPathManager : NavigationPathManager
         @StateObject private var progressBarManager = TimeProgressBarManager(duration: 15, warningTime: 5)
         
         @Binding var currentMatchState: CardState
@@ -135,8 +135,8 @@ struct MatchingGameView: View {
                 }
                 .onChange(of: isGameFinished, { _, newValue in
                     if newValue {
-                        navigationPathManger.updateResultInfo(totalCount: quizzes.count, correntCount: matchedPairs)
-                        navigationPathManger.navigationPath.append(AppDestination.resultGame)
+                        navigationPathManager.updateResultInfo(totalCount: quizzes.count, correntCount: matchedPairs)
+                        navigationPathManager.navigationPath.append(AppDestination.resultGame)
                     }
                 })
                 .padding(.top, 54)
