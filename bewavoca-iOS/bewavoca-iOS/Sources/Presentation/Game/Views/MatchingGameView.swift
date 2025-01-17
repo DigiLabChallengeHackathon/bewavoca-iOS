@@ -9,7 +9,7 @@ struct MatchingGameView: View {
             ZStack {
                 BackgroundRectangleView {
                     VStack {
-                        MatchingGameTopView()
+                        MatchingGameTopView(navigationPathManager : navigationPathManager)
                         MatchingGameBodyView(currentMatchState: $currentMatchState)
                         Spacer()
                     }
@@ -47,16 +47,14 @@ struct MatchingGameView: View {
     }
     
     private struct MatchingGameTopView: View {
+        let navigationPathManager : NavigationPathManager
         var body: some View {
             HStack {
-                VStack{
-                    NavigationLink(destination: NextSampleGameView(test: "뒤로 가는 페이지")) {
-                        Image("btn_back")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 78, height: 78)
-                    }
-                    Spacer()
+                Button(action: {
+                    navigationPathManager.navigationPath.removeLast() // go to StageView
+                }){
+                    Image("btn_back")
+                        .foregroundColor(.blue)
                 }
                 
                 Spacer()

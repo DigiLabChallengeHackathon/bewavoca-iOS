@@ -7,7 +7,7 @@ struct MultipleChoiceGameView: View {
         DeviceScaledView {
             BackgroundRectangleView {
                 VStack {
-                    MultipleGameTopView()
+                    MultipleGameTopView(navigationPathManager: navigationPathManager)
                     
                     MultipleGameBodyView()
                     
@@ -23,12 +23,15 @@ struct MultipleChoiceGameView: View {
 
 
 struct MultipleGameTopView: View {
+    let navigationPathManager : NavigationPathManager
     var body: some View {
         HStack {
-            // 1. NavigationLink (왼쪽 정렬) @@수정
-            //            NavigationLink(destination: NextSampleGameView(test: "뒤로 가는 페이지")) {
-            //                Image("btn_back")
-            //            }
+            Button(action: {
+                navigationPathManager.navigationPath.removeLast() // go to StageView
+            }){
+                Image("btn_back")
+                    .foregroundColor(.blue)
+            }
             
             Spacer()
             
