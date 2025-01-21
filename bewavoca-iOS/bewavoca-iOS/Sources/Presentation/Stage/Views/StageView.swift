@@ -16,7 +16,6 @@ import SwiftUI
 
 struct StageView: View {
     @EnvironmentObject private var navigationPathManager : NavigationPathManager
-    @Environment(\.dismiss) private var dismiss
     @State private var selectedStage: Int?
     
     var body: some View {
@@ -30,7 +29,7 @@ struct StageView: View {
                     userStage: navigationPathManager.userViewModel.userData.stage,
                     level: navigationPathManager.userViewModel.userData.level,
                     onBackTapped: {
-                        dismiss()
+                        navigationPathManager.resetToMainView()
                     },
                     onStageTapped: { stageNumber in
                         switch stageNumber {

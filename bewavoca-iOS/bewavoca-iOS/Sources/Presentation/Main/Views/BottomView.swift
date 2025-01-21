@@ -1,8 +1,7 @@
 import SwiftUI
 
 struct BottomView: View {
-    @EnvironmentObject private var navigationPathManager : NavigationPathManager
-    @State private var showCharacterSelect = false
+    let navigationPathManager: NavigationPathManager
     
     var body: some View {
         HStack {
@@ -16,7 +15,10 @@ struct BottomView: View {
                     .offset(y: 72)
                 
                 Button(action: {
-                    showCharacterSelect = true
+                    HapticManager.shared.trigger(.tap)
+                    SoundManager.shared.playEffect(.tap)
+                    
+                    navigationPathManager.navigationPath.append(AppDestination.characterSelect)
                 }, label: {
                     Image("btn_character")
                         .resizable()
@@ -28,8 +30,5 @@ struct BottomView: View {
         .frame(width: 1366, height: 392)
         .padding(.horizontal, 46)
         .padding(.bottom, 113)
-        .fullScreenCover(isPresented: $showCharacterSelect) {
-            CharacterSelectionView()
-        }
     }
 }

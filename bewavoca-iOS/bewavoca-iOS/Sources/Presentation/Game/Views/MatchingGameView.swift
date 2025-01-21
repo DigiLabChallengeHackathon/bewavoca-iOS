@@ -30,7 +30,8 @@ struct MatchingGameView: View {
             .frame(width: 1366, height: 1024)
             .padding(.bottom, 41)
             .padding(.trailing, 51)
-        }.withBackgroundMusic(viewName: String(describing: Self.self))
+        }
+        .withBackgroundMusic(viewName: String(describing: Self.self))
     }
     
     private func getCharacterImageName(for state: CardState) -> String {

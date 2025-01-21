@@ -15,7 +15,7 @@ struct MainView: View {
                     
                     Spacer()
                     
-                    BottomView()
+                    BottomView(navigationPathManager:navigationPathManager)
                         .frame(alignment: .bottom)
                 }
             }
