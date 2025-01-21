@@ -2,14 +2,12 @@ import SwiftUI
 
 struct ResultGameView: View {
     @EnvironmentObject private var navigationPathManager: NavigationPathManager
-    @Environment(\.dismiss) private var dismiss
     @State private var isShowingRewardView = false
     
     var body: some View {
         DeviceScaledView {
             ResultContentView(
                 navigationPathManager: navigationPathManager,
-                dismiss: dismiss,
                 isShowingRewardView: $isShowingRewardView
             )
         }
@@ -21,7 +19,6 @@ struct ResultGameView: View {
 
 struct ResultContentView: View {
     let navigationPathManager: NavigationPathManager
-    let dismiss: DismissAction
     @Binding var isShowingRewardView: Bool
     
     var body: some View {
@@ -29,7 +26,6 @@ struct ResultContentView: View {
             TitleSection()
             ResultSection(
                 navigationPathManager: navigationPathManager,
-                dismiss: dismiss,
                 isShowingRewardView: $isShowingRewardView
             )
             Spacer()
@@ -49,7 +45,6 @@ struct TitleSection: View {
 
 struct ResultSection: View {
     let navigationPathManager: NavigationPathManager
-    let dismiss: DismissAction
     @Binding var isShowingRewardView: Bool
     
     var body: some View {
@@ -57,7 +52,6 @@ struct ResultSection: View {
             BackgroundResizeRectangleView(width: 812, height: 554) {
                 ResultDetailsView(
                     navigationPathManager: navigationPathManager,
-                    dismiss: dismiss,
                     isShowingRewardView: $isShowingRewardView
                 )
             }
@@ -82,7 +76,6 @@ struct RibbonImage: View {
 
 struct ResultDetailsView: View {
     let navigationPathManager: NavigationPathManager
-    let dismiss: DismissAction
     @Binding var isShowingRewardView: Bool
     
     var body: some View {
@@ -99,7 +92,6 @@ struct ResultDetailsView: View {
                 }
                 ResultInfoView(
                     navigationPathManager: navigationPathManager,
-                    dismiss: dismiss,
                     isShowingRewardView: $isShowingRewardView
                 )
             }
@@ -112,7 +104,6 @@ struct ResultDetailsView: View {
 
 struct ResultInfoView: View {
     let navigationPathManager: NavigationPathManager
-    let dismiss: DismissAction
     @Binding var isShowingRewardView: Bool
     
     var body: some View {
@@ -122,7 +113,6 @@ struct ResultInfoView: View {
             ScoreText(result: navigationPathManager.currentResultInfo)
             ConfirmButton(
                 navigationPathManager: navigationPathManager,
-                dismiss: dismiss,
                 isShowingRewardView: $isShowingRewardView
             )
             Spacer()
@@ -192,11 +182,15 @@ struct ScoreText: View {
 
 struct ConfirmButton: View {
     let navigationPathManager: NavigationPathManager
-    let dismiss: DismissAction
     @Binding var isShowingRewardView: Bool
     
     var body: some View {
-        Button(action: handleConfirmAction) {
+        Button(action: {
+            HapticManager.shared.trigger(.tap)
+            SoundManager.shared.playEffect(.tap)
+            
+            handleConfirmAction()
+        }){
             Image("btn_confirm")
                 .resizable()
                 .scaledToFill()

@@ -57,6 +57,9 @@ struct CharacterInfoView: View {
                     .font(.custom("GmarketSansMedium", size: 25))
                 
                 Button(action: {
+                    HapticManager.shared.trigger(.tap)
+                    SoundManager.shared.playEffect(.tap)
+                    
                     updateCharacter(character.rawValue)
                 }) {
                     Image("btn_together")

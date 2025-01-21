@@ -27,7 +27,10 @@ struct MultipleGameTopView: View {
     var body: some View {
         HStack {
             Button(action: {
-                navigationPathManager.navigationPath.removeLast() // go to StageView
+                HapticManager.shared.trigger(.tap)
+                SoundManager.shared.playEffect(.tap)
+                
+                navigationPathManager.resetToMainView() // go to StageView
             }){
                 Image("btn_back")
                     .foregroundColor(.blue)
@@ -50,6 +53,8 @@ struct MultipleGameTopView: View {
             
             // 3. ImageButton (우측 정렬)
             Button(action: {
+                HapticManager.shared.trigger(.tap)
+                
                 print("Button clicked")
             }) {
                 Image("btn_sound")

@@ -81,6 +81,9 @@ struct StartButtonView: View {
     var body: some View {
         Button(action: {
             if isButtonEnabled {
+                HapticManager.shared.trigger(.tap)
+                SoundManager.shared.playEffect(.tap)
+                
                 isButtonPressed.toggle()
                 action()
             }

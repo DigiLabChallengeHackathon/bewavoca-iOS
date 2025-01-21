@@ -27,6 +27,9 @@ struct MapView: View {
                 // 각 버튼에 따라 NextSampleView 화면 전환
                 
                 Button(action: {
+                    HapticManager.shared.trigger(.tap)
+                    SoundManager.shared.playEffect(.tap)
+                    
                     navigationPathManager.updateStage(to: stage)
                     navigationPathManager.navigationPath.append(AppDestination.stage)
                 }) {

@@ -10,6 +10,9 @@ struct ChoiceCardButton: View {
 
     var body: some View {
         Button(action: {
+            HapticManager.shared.trigger(.tap)
+            SoundManager.shared.playEffect(.tap)
+            
             selectedAnswer = id
             onButtonClick(id) // 선택된 답 반환
         }) {

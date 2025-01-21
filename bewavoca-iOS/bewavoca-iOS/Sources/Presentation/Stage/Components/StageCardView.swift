@@ -14,9 +14,14 @@ struct StageCardView: View {
                 .fill(Color.white)
                 .frame(width: 1237, height: 479)
                 .shadow(radius: 10)
-                        
+            
             // 뒤로가기 버튼
-            Button(action: onBackTapped) {
+            Button(action: {
+                HapticManager.shared.trigger(.tap)
+                SoundManager.shared.playEffect(.tap)
+                
+                onBackTapped()
+            }) {
                 Image("button_back")
                     .frame(width: 60, height: 60)
             }
@@ -26,13 +31,17 @@ struct StageCardView: View {
             // 스테이지 버튼들
             HStack(spacing: 59) {
                 ForEach(1...3, id: \.self) { stageNumber in
-                    Button(action: { onStageTapped(stageNumber) }) {
-                        StageItemButton(
-                            stageNumber: stageNumber,
-                            status: getStageStatus(for: stageNumber)
-                        )
-                    }
-                    .disabled(getStageStatus(for: stageNumber) == .locked)
+                    Button(action: {
+                        HapticManager.shared.trigger(.tap)
+                        SoundManager.shared.playEffect(.tap)
+                        
+                        onStageTapped(stageNumber) }) {
+                            StageItemButton(
+                                stageNumber: stageNumber,
+                                status: getStageStatus(for: stageNumber)
+                            )
+                        }
+                        .disabled(getStageStatus(for: stageNumber) == .locked)
                 }
             }
             .padding(.leading, 210)

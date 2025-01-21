@@ -14,7 +14,6 @@ import SwiftUI
 struct CharacterSelectionView: View {
     @EnvironmentObject private var navigationPathManager : NavigationPathManager
     
-    @Environment(\.dismiss) private var dismiss
     @State private var selectedCharacter: CharacterType = .harbang
     
     var body: some View {
@@ -36,7 +35,16 @@ struct CharacterSelectionView: View {
                     )
                 }
                 
-                DismissButton(dismiss: dismiss)
+                Button(action: {
+                    HapticManager.shared.trigger(.tap)
+                    SoundManager.shared.playEffect(.tap)
+                    
+                    navigationPathManager.resetToMainView()
+                }) {
+                    Image("btn_x")
+                        .frame(width: 78)
+                }
+                .offset(x: 520, y: -320)
             }
         }
         .onAppear {
@@ -50,6 +58,6 @@ struct CharacterSelectionView: View {
 #Preview {
     NavigationStack {
         CharacterSelectionView()
-        }.environmentObject(NavigationPathManager(userViewModel: UserViewModel.mock))
+    }.environmentObject(NavigationPathManager(userViewModel: UserViewModel.mock))
     
 }

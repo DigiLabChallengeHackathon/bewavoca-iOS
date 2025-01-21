@@ -15,7 +15,11 @@ struct TapToContinueButton: View {
     let action: () -> Void
     
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            HapticManager.shared.trigger(.tap)
+            SoundManager.shared.playEffect(.tap)
+            action()
+        }) {
             Color.clear
                 .frame(width: DeviceConstant.baseWidth, height: DeviceConstant.baseHeight)
                 .contentShape(Rectangle())
