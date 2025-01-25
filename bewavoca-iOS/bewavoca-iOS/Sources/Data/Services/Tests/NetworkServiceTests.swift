@@ -1,6 +1,6 @@
 import Foundation
 
-struct UserDTO: Decodable {
+struct TestUserDTO: Decodable {
     let id: Int
     let name: String
     let username: String
@@ -9,7 +9,7 @@ struct UserDTO: Decodable {
     let website: String
 }
 
-struct PostDTO: Decodable {
+struct TestPostDTO: Decodable {
     let id: Int
     let title: String
     let body: String
@@ -25,7 +25,7 @@ final class NetworkServiceTests {
     
     func testGetUserRequest() async {
         do {
-            let user: UserDTO = try await networkService.request(
+            let user: TestUserDTO = try await networkService.request(
                 endpoint: "/users/3",
                 method: .get,
                 parameters: nil
@@ -44,7 +44,7 @@ final class NetworkServiceTests {
     
     func testPostRequest() async {
         do {
-            let newPost: PostDTO = try await networkService.request(
+            let newPost: TestPostDTO = try await networkService.request(
                 endpoint: "/posts",
                 method: .post,
                 parameters: [
