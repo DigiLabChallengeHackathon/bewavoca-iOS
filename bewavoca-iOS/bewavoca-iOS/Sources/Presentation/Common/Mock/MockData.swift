@@ -3,7 +3,7 @@ enum MockData {
         userId: 1,
         nickname: "테스트유저",
         character: 1,
-        stage: 1,
+        region: 1,
         level: 1
     )
 }

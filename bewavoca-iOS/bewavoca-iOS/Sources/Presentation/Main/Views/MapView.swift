@@ -60,8 +60,8 @@ struct MapView: View {
                         // isActive: userData.stage + 1 == stage.index
                         
                         // 변경 로직 - stage가 현재 도전하는 스테이지
-                        isOpen: userViewModel.userData.stage > stage.index,
-                        isActive: userViewModel.userData.stage == stage.index
+                        isOpen: userViewModel.userData.region > stage.index,
+                        isActive: userViewModel.userData.region == stage.index
                     )
                 }
                 .buttonStyle(BaseButtonStyle())

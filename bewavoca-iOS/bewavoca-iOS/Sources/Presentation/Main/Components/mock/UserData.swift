@@ -6,6 +6,6 @@ struct UserData: Codable {
     var userId: Int
     var nickname: String
     var character: Int
-    var stage: Int
+    var region: Int
     var level: Int
 }

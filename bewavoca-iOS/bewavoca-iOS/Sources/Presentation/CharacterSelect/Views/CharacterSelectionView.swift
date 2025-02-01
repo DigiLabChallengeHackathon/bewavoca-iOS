@@ -31,7 +31,7 @@ struct CharacterSelectionView: View {
                     )
                     CharacterGridView(
                         selectedCharacter: $selectedCharacter,
-                        userClearedStage: userViewModel.userData.stage
+                        userClearedStage: userViewModel.userData.region
                     )
                 }
                 

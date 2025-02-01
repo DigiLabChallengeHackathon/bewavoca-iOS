@@ -27,7 +27,7 @@ struct StageView: View {
                 
                 StageCardView(
                     currentStage: 1,
-                    userStage: userViewModel.userData.stage,
+                    userStage: userViewModel.userData.region,
                     level: userViewModel.userData.level,
                     onBackTapped: {
                         dismiss()
