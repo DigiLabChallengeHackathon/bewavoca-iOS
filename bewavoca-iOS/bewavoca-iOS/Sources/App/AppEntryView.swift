@@ -2,7 +2,7 @@
 //  AppEntryView.swift
 //  bewavoca-iOS
 //
-//  Created by Moo on 2023/12/30.
+//  Created by Moo on 2025/02/01.
 //
 //  앱의 진입점 뷰입니다.
 //  - 스플래시 화면 표시
@@ -13,20 +13,18 @@
 import SwiftUI
 
 struct AppEntryView: View {
-    // MARK: - Properties
     @AppStorage("userUUID") private var userUUID: String?
     @StateObject private var userViewModel: UserViewModel
     @State private var isLoading = true
     @State private var isNewUser: Bool = true
     
-    // 생성자에서 초기화
+    private let authService: AuthService = AuthServiceImpl()
+    
     init() {
-        let isExisting = UserDefaults.standard.string(forKey: "userUUID") != nil
-        _userViewModel = StateObject(wrappedValue: UserViewModel(isExistingUser: isExisting))
-        _isNewUser = State(initialValue: UserDefaults.standard.string(forKey: "userUUID") == nil)
+        _userViewModel = StateObject(wrappedValue: UserViewModel())
+        _isNewUser = State(initialValue: true)
     }
     
-    // MARK: - Body
     var body: some View {
         Group {
             if isLoading {
@@ -47,13 +45,38 @@ struct AppEntryView: View {
     private func initializeAndProceed() {
         if userUUID == nil {
             userUUID = UUID().uuidString
-            isNewUser = true
-        } else {
-            isNewUser = false
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            isLoading = false
+        Task {
+            do {
+                let response = try await authService.checkDevice(deviceId: userUUID ?? "")
+                guard let userData = response.data else {
+                    isNewUser = true
+                    print("❌ 사용자 데이터가 없음")
+                    return
+                }
+                
+                isNewUser = false
+                
+                DispatchQueue.main.async {
+                    userViewModel.userData = UserData(
+                        userId: userData.userid,
+                        nickname: userData.nickname,
+                        character: userData.character,
+                        region: userData.region,
+                        level: userData.level
+                    )
+                }
+                
+                print("✅ 디바이스 체크 성공 및 사용자 데이터 불러오기: \(userData)")
+            } catch {
+                isNewUser = true
+                print("❌ 디바이스 체크 실패: \(error.localizedDescription)")
+            }
+            
+            DispatchQueue.main.async {
+                isLoading = false
+            }
         }
     }
 }
