@@ -19,6 +19,7 @@ struct CreateNicknameView: View {
     @State private var nickname: String = ""
     @State private var isButtonPressed: Bool = false
     @State private var isShowingMainView: Bool = false
+    private let authService: AuthService = AuthServiceImpl()
     
     private var isButtonEnabled: Bool {
         return nickname.count >= 1
@@ -47,8 +48,26 @@ struct CreateNicknameView: View {
                             isButtonPressed: $isButtonPressed,
                             isButtonEnabled: isButtonEnabled,
                             action: {
-                                userViewModel.setNickname(nickname)
-                                isShowingMainView = true
+                                Task {
+                                    do {
+                                        let response = try await authService.signUp(
+                                            deviceId: UserDefaults.standard.string(forKey: "userUUID") ?? "",
+                                            nickname: nickname
+                                        )
+                                        
+                                        if let signUpData = response.data {
+                                            DispatchQueue.main.async {
+                                                userViewModel.userData.userId = signUpData.userId
+                                                userViewModel.userData.nickname = signUpData.nickname
+                                                isShowingMainView = true
+                                            }
+                                        }
+                                        
+                                        print("✅ Signup successful")
+                                    } catch {
+                                        print("❌ Signup failed: \(error.localizedDescription)")
+                                    }
+                                }
                             }
                         )
                     }
@@ -62,7 +81,7 @@ struct CreateNicknameView: View {
 // MARK: - Preview
 #Preview {
     CreateNicknameView()
-        .environmentObject(UserViewModel(isExistingUser: false))
+        .environmentObject(UserViewModel())
 }
 
 // MARK: - TitleView
