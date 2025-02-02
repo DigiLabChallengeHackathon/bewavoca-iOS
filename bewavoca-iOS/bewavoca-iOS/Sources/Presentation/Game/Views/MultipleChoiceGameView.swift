@@ -1,34 +1,39 @@
 import SwiftUI
 
 struct MultipleChoiceGameView: View {
-    let stage: Stage
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     
     var body: some View {
         DeviceScaledView {
             BackgroundRectangleView {
-                NavigationStack {
-                    VStack {
-                        MultipleGameTopView()
-                        
-                        MultipleGameBodyView(stage: stage)
-                        
-                        Spacer()
-                    }
-                    .background(Color.clear)
-                    .padding(.top, 54)
+                VStack {
+                    MultipleGameTopView(navigationPathManager: navigationPathManager)
+                    
+                    MultipleGameBodyView()
+                    
+                    Spacer()
                 }
+                .background(Color.clear)
+                .padding(.top, 54)
             }
         }
+        .withBackgroundMusic(viewName: String(describing: Self.self))
     }
 }
 
 
 struct MultipleGameTopView: View {
+    let navigationPathManager : NavigationPathManager
     var body: some View {
         HStack {
-            // 1. NavigationLink (왼쪽 정렬)
-            NavigationLink(destination: NextSampleGameView(test: "뒤로 가는 페이지")) {
+            Button(action: {
+                HapticManager.shared.trigger(.tap)
+                SoundManager.shared.playEffect(.tap)
+                
+                navigationPathManager.resetToMainView() // go to StageView
+            }){
                 Image("btn_back")
+                    .foregroundColor(.blue)
             }
             
             Spacer()
@@ -48,6 +53,8 @@ struct MultipleGameTopView: View {
             
             // 3. ImageButton (우측 정렬)
             Button(action: {
+                HapticManager.shared.trigger(.tap)
+                
                 print("Button clicked")
             }) {
                 Image("btn_sound")
@@ -61,8 +68,7 @@ struct MultipleGameTopView: View {
 }
 
 struct MultipleGameBodyView: View {
-    let stage: Stage
-    let gameType: GameType = .choice
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     
     @State private var currentQuizIndex: Int = 0
     @State private var selectedAnswer: Int? = nil
@@ -129,14 +135,12 @@ struct MultipleGameBodyView: View {
             .disabled(isButtonDisabled)
         }
         .padding()
-        .navigationDestination(isPresented: $isGameFinished) {
-            ResultGameView(
-                totalQuestions: quizzes.count,
-                correctAnswers: correctCount,
-                stage: stage,
-                gameType: gameType
-            )
-        }
+        .onChange(of: isGameFinished, { _, newValue in
+            if newValue {
+                navigationPathManager.updateResultInfo(totalCount: quizzes.count, correntCount: correctCount)
+                navigationPathManager.navigationPath.append(AppDestination.resultGame)
+            }
+        })
         .onAppear {
             progressBarManager.start() // 타이머 시작
         }
@@ -144,7 +148,10 @@ struct MultipleGameBodyView: View {
     
     private func handleAnswerSelection(selectedIndex: Int) {
         if quizzes[currentQuizIndex].options[selectedIndex] == quizzes[currentQuizIndex].correctAnswer {
+            SoundManager.shared.playEffect(.correct)
             correctCount += 1
+        }else{
+            SoundManager.shared.playEffect(.incorrect)
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -168,5 +175,7 @@ struct MultipleGameBodyView: View {
 
 
 #Preview {
-    MultipleChoiceGameView(stage: .garden)
+    NavigationStack {
+        MultipleChoiceGameView()
+    }.environmentObject(NavigationPathManager(userViewModel: UserViewModel.mock))
 }

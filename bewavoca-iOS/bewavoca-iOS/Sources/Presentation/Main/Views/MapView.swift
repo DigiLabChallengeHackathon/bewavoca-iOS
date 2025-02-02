@@ -5,32 +5,9 @@ import SwiftUI
  실제 View 를 NavigationStack 으로 감싸야합니다
  */
 
-enum Stage: CaseIterable, CustomStringConvertible {
-    case garden, plateau, village, meadow, ridge
-    
-    var index: Int {
-        switch self {
-        case .garden: return 1
-        case .plateau: return 2
-        case .village: return 3
-        case .meadow: return 4
-        case .ridge: return 5
-        }
-    }
-    
-    var description: String {
-        switch self {
-        case .garden: return "garden"
-        case .plateau: return "plateau"
-        case .village: return "village"
-        case .meadow: return "meadow"
-        case .ridge: return "ridge"
-        }
-    }
-}
 
 struct MapView: View {
-    @EnvironmentObject private var userViewModel: UserViewModel
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     
     private let stages: [(Stage, AnyShape, String, Color)] = [
         (.garden, AnyShape(GardenPathShape()), "garden", Color("myRed")),
@@ -48,9 +25,14 @@ struct MapView: View {
             
             ForEach(stages, id: \.0) { stage, shape, stageName, color in
                 // 각 버튼에 따라 NextSampleView 화면 전환
-                NavigationLink(
-                    destination: destinationView(for: stage)
-                ) {
+                
+                Button(action: {
+                    HapticManager.shared.trigger(.tap)
+                    SoundManager.shared.playEffect(.tap)
+                    
+                    navigationPathManager.updateStage(to: stage)
+                    navigationPathManager.navigationPath.append(AppDestination.stage)
+                }) {
                     ImageMapButtonView(
                         shape: shape,
                         stageName: stageName,
@@ -60,8 +42,8 @@ struct MapView: View {
                         // isActive: userData.stage + 1 == stage.index
                         
                         // 변경 로직 - stage가 현재 도전하는 스테이지
-                        isOpen: userViewModel.userData.stage > stage.index,
-                        isActive: userViewModel.userData.stage == stage.index
+                        isOpen: navigationPathManager.userViewModel.userData.stage > stage.index,
+                        isActive: navigationPathManager.userViewModel.userData.stage == stage.index
                     )
                 }
                 .buttonStyle(BaseButtonStyle())
@@ -69,23 +51,6 @@ struct MapView: View {
         }
         .frame(width: 1102 , height: 666)
         .background(Color.clear)
-    }
-    
-    // @ViewBuilder 사용하면 AnyView 사용 안해도 됨
-    private func destinationView(for stage: Stage) -> some View {
-        switch stage {
-        case .garden:
-            return AnyView(StageView())
-        case .plateau:
-            return AnyView(NextSampleGameView(test: "\(stage) plateau"))
-        case .village:
-            return AnyView(NextSampleGameView(test: "\(stage) village"))
-        case .meadow:
-            return AnyView(NextSampleGameView(test: "\(stage) meadow"))
-        case .ridge:
-            return AnyView(NextSampleGameView(test: "\(stage) ridge"))
-            
-        }
     }
 }
 

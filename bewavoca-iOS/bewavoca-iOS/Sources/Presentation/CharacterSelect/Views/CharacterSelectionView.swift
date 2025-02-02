@@ -12,8 +12,8 @@
 import SwiftUI
 
 struct CharacterSelectionView: View {
-    @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var userViewModel: UserViewModel
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
+    
     @State private var selectedCharacter: CharacterType = .harbang
     
     var body: some View {
@@ -24,27 +24,40 @@ struct CharacterSelectionView: View {
                 VStack(spacing: 50) {
                     CharacterIntroductionView(
                         character: selectedCharacter,
-                        currentCharacter: userViewModel.userData.character,
+                        currentCharacter: navigationPathManager.userViewModel.userData.character,
                         updateCharacter: { selected in
-                            userViewModel.userData.character = selected
+                            navigationPathManager.userViewModel.userData.character = selected
                         }
                     )
                     CharacterGridView(
                         selectedCharacter: $selectedCharacter,
-                        userClearedStage: userViewModel.userData.stage
+                        userClearedStage: navigationPathManager.userViewModel.userData.stage
                     )
                 }
                 
-                DismissButton(dismiss: dismiss)
+                Button(action: {
+                    HapticManager.shared.trigger(.tap)
+                    SoundManager.shared.playEffect(.tap)
+                    
+                    navigationPathManager.resetToMainView()
+                }) {
+                    Image("btn_x")
+                        .frame(width: 78)
+                }
+                .offset(x: 520, y: -320)
             }
         }
         .onAppear {
-            selectedCharacter = CharacterType(rawValue: userViewModel.userData.character) ?? .harbang
+            selectedCharacter = CharacterType(rawValue: navigationPathManager.userViewModel.userData.character) ?? .harbang
         }
+        .withBackgroundMusic(viewName: String(describing: Self.self))
     }
 }
 
 // MARK: - Preview
 #Preview {
-    CharacterSelectionView()
+    NavigationStack {
+        CharacterSelectionView()
+    }.environmentObject(NavigationPathManager(userViewModel: UserViewModel.mock))
+    
 }

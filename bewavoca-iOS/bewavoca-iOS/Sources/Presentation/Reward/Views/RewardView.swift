@@ -15,7 +15,7 @@
 import SwiftUI
 
 struct RewardView: View {
-    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     let characterType: CharacterType
     @State private var currentPage = 0
     @State private var showNewCharacterView = false
@@ -56,6 +56,8 @@ struct RewardView: View {
             .fullScreenCover(isPresented: $showNewCharacterView) {
                 NewCharacterView(characterType: characterType)
             }
+            .navigationBarBackButtonHidden(true)
+            .navigationBarHidden(true)
         }
     }
 }

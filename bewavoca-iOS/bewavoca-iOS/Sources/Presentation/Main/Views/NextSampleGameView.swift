@@ -1,8 +1,10 @@
 import SwiftUI
 
 struct NextSampleGameView: View {
-    var test: String 
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     @Environment(\.presentationMode) var presentationMode
+    
+    var test: String
     
     var body: some View {
         VStack {

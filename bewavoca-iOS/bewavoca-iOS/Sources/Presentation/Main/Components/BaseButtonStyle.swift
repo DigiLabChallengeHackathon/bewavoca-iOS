@@ -8,8 +8,9 @@ struct BaseButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .opacity(configuration.isPressed ? 0.5 : 1.0) // 터치 시 약간의 투명도 변경
-            .onChange(of: configuration.isPressed, initial: false) { oldValue, newValue in
+            .onChange(of: configuration.isPressed, initial: false) { _, newValue in
                 if newValue {
+                    HapticManager.shared.trigger(.tap)
                     SoundManager.shared.playEffect(.tap)
                 }
             }

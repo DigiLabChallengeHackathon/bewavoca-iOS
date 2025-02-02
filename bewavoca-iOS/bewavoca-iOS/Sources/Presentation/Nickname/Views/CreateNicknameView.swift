@@ -15,10 +15,9 @@ import SwiftUI
 ///   - `NicknameCardView`를 통해 닉네임 입력을 받음.
 ///   - 닉네임이 입력되면 `시작` 버튼이 활성화되어 다음 화면으로 진행할 수 있음.
 struct CreateNicknameView: View {
-    @EnvironmentObject private var userViewModel: UserViewModel
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     @State private var nickname: String = ""
     @State private var isButtonPressed: Bool = false
-    @State private var isShowingMainView: Bool = false
     
     private var isButtonEnabled: Bool {
         return nickname.count >= 1
@@ -26,36 +25,34 @@ struct CreateNicknameView: View {
     
     // MARK: - Body
     var body: some View {
-        if isShowingMainView {
-            MainView()
-        } else {
-            DeviceScaledView {
-                ZStack {
-                    Color("myDarkBlue")
-                        .ignoresSafeArea()
+        DeviceScaledView {
+            ZStack {
+                Color("myDarkBlue")
+                    .ignoresSafeArea()
+                
+                VStack(spacing: 70) {
+                    TitleView()
                     
-                    VStack(spacing: 70) {
-                        TitleView()
-                        
-                        NicknameCardView(
-                            selectedCharacter: "character_card_harbang",
-                            text: "이름을 알려줘",
-                            nickname: $nickname
-                        )
-                        
-                        StartButtonView(
-                            isButtonPressed: $isButtonPressed,
-                            isButtonEnabled: isButtonEnabled,
-                            action: {
-                                userViewModel.setNickname(nickname)
-                                isShowingMainView = true
-                            }
-                        )
-                    }
+                    NicknameCardView(
+                        selectedCharacter: "character_card_harbang",
+                        text: "이름을 알려줘",
+                        nickname: $nickname
+                    )
+                    
+                    StartButtonView(
+                        isButtonPressed: $isButtonPressed,
+                        isButtonEnabled: isButtonEnabled,
+                        action: {
+                            navigationPathManager.userViewModel.setNickname(nickname)
+                            
+                            navigationPathManager.navigationPath.append(AppDestination.main)
+                        }
+                    )
                 }
             }
-            .ignoresSafeArea(.keyboard)
         }
+        .ignoresSafeArea(.keyboard)
+        .withBackgroundMusic(viewName: String(describing: Self.self))
     }
 }
 
@@ -84,6 +81,9 @@ struct StartButtonView: View {
     var body: some View {
         Button(action: {
             if isButtonEnabled {
+                HapticManager.shared.trigger(.tap)
+                SoundManager.shared.playEffect(.tap)
+                
                 isButtonPressed.toggle()
                 action()
             }

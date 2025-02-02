@@ -11,5 +11,11 @@ struct EffectButtonStyle: ButtonStyle {
             .scaleEffect(configuration.isPressed ? 1.1 : 1.0)
             .animation(.easeInOut(duration: 0.2), value: configuration.isPressed)
             .opacity(1.0)
+            .onChange(of: configuration.isPressed, initial: false) { _, newValue in
+                if newValue {
+                    HapticManager.shared.trigger(.tap)
+                    SoundManager.shared.playEffect(.tap)
+                }
+            }
     }
 }

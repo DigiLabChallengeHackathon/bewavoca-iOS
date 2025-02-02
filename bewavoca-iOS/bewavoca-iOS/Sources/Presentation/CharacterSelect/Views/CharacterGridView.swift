@@ -42,6 +42,9 @@ struct CharacterGridButton: View {
     var body: some View {
         Button(action: {
             if !isLocked {
+                HapticManager.shared.trigger(.tap)
+                SoundManager.shared.playEffect(.tap)
+                
                 action()
             }
         }) {

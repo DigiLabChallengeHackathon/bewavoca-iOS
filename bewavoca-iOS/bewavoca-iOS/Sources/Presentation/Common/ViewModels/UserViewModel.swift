@@ -71,3 +71,10 @@ final class UserViewModel: ObservableObject {
         }
     }
 }
+
+extension UserViewModel {
+    static var mock: UserViewModel {
+        let mockViewModel = UserViewModel(isExistingUser: false)
+        return mockViewModel
+    }
+}

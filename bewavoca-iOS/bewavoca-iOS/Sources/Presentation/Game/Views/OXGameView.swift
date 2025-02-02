@@ -1,34 +1,34 @@
 import SwiftUI
 
 struct OXGameView: View {
-    @EnvironmentObject private var userViewModel: UserViewModel
-    let stage: Stage
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     
     var body: some View {
         DeviceScaledView {
             BackgroundRectangleView {
-                NavigationStack {
-                    VStack {
-                        OXGameTopView()
-                        OXGameBodyView(
-                            stage: stage,
-                            gameType: .ox
-                        )
-                        Spacer()
-                    }
-                    .background(Color.clear)
-                    .padding(.top, 54)
+                VStack {
+                    OXGameTopView(navigationPathManager:navigationPathManager)
+                    OXGameBodyView()
+                    Spacer()
                 }
+                .background(Color.clear)
+                .padding(.top, 54)
             }
         }
+        .withBackgroundMusic(viewName: String(describing: Self.self))
     }
 }
 
 struct OXGameTopView: View {
+    let navigationPathManager : NavigationPathManager
     var body: some View {
         HStack {
-            // 1. NavigationLink (왼쪽 정렬)
-            NavigationLink(destination: NextSampleGameView(test: "뒤로 가는 페이지")) {
+            Button(action: {
+                HapticManager.shared.trigger(.tap)
+                SoundManager.shared.playEffect(.tap)
+                
+                navigationPathManager.resetToMainView() // go to StageView
+            }){
                 Image("btn_back")
                     .foregroundColor(.blue)
             }
@@ -50,6 +50,8 @@ struct OXGameTopView: View {
             
             // 3. ImageButton (우측 정렬)
             Button(action: {
+                HapticManager.shared.trigger(.tap)
+                
                 print("Button clicked")
             }) {
                 Image("btn_sound")
@@ -66,9 +68,7 @@ struct OXGameTopView: View {
 
 
 struct OXGameBodyView: View {
-    let stage: Stage
-    let gameType: GameType
-    
+    @EnvironmentObject private var navigationPathManager : NavigationPathManager
     @State private var currentQuizIndex: Int = 0
     @State private var correctCount: Int = 0 // 맞춘 갯수 바인딩(API로 보낼 예정)
     
@@ -79,11 +79,7 @@ struct OXGameBodyView: View {
     
     @StateObject private var progressBarManager = TimeProgressBarManager(duration: 15, warningTime: 5)
     
-    @State private var shuffledQuizzes: [OXQuiz] = [
-        OXQuiz(oxId: 8, question: "[바나나]는 제주어로 바나나다", correctAnswer: true, explanation: "바나나는 제주어로 A입니다.", voice: nil),
-        OXQuiz(oxId: 9, question: "[딸기]는 제주어로 딸기가 아니다", correctAnswer: false, explanation: "딸기는 제주어로 B가 아닙니다.", voice: nil),
-        OXQuiz(oxId: 10, question: "[한라봉]은 제주도의 대표 과일이다", correctAnswer: true, explanation: "한라봉은 제주도의 대표 과일로 유명합니다.", voice: nil)
-    ]
+    @State private var shuffledQuizzes: [OXQuiz] = OXQuizListViewModel.mockData().data.quizzes
     
     @State private var isOXGameFinished = false // 게임완료 여부
     @State private var isButtonDisabled = false // 버튼비활성화 여부
@@ -136,9 +132,13 @@ struct OXGameBodyView: View {
             Spacer()
             
             OXCardButtonView(selectedAnswer: $selectedAnswer, correctAnswer: shuffledQuizzes[currentQuizIndex].correctAnswer ? .O : .X) { selectedAnswer in
+                
                 self.selectedAnswer = selectedAnswer
                 self.isTimeOver = true
                 self.isButtonDisabled = true
+                
+                SoundManager.shared.playEffect((self.selectedAnswer != nil) == shuffledQuizzes[currentQuizIndex].correctAnswer ? .correct : .incorrect)
+                
                 progressBarManager.pause()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     self.isButtonDisabled = false
@@ -148,14 +148,12 @@ struct OXGameBodyView: View {
             }
             .padding(.bottom, 132)
             .disabled(isButtonDisabled)
-            .navigationDestination(isPresented: $isOXGameFinished) {
-                ResultGameView(
-                    totalQuestions: shuffledQuizzes.count,
-                    correctAnswers: correctCount,
-                    stage: stage,
-                    gameType: gameType
-                )
-            }
+            .onChange(of: isOXGameFinished, { _, newValue in
+                if newValue {
+                    navigationPathManager.updateResultInfo(totalCount: shuffledQuizzes.count, correntCount: correctCount)
+                    navigationPathManager.navigationPath.append(AppDestination.resultGame)
+                }
+            })
             
         }
         .frame(alignment: .top)
@@ -166,6 +164,7 @@ struct OXGameBodyView: View {
             progressBarManager.start()
         }
     }
+    
     
     private func moveToNextQuiz() {
         if selectedAnswer != nil {
@@ -186,5 +185,7 @@ struct OXGameBodyView: View {
 }
 
 #Preview {
-    OXGameView(stage: .garden)
+    NavigationStack {
+        OXGameView()
+    }.environmentObject(NavigationPathManager(userViewModel: UserViewModel.mock))
 }
