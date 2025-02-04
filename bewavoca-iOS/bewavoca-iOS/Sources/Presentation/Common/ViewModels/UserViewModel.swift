@@ -23,9 +23,19 @@ final class UserViewModel: ObservableObject {
     }
     
     /// 사용자의 닉네임 설정 (신규 사용자용)
-    func setNickname(_ nickname: String) {
-        userData.nickname = nickname
-        // TODO: 서버 연동 시 사용자 생성 API 호출 추가
+    func setNickname(_ nickname: String) async throws {
+        let authService = AuthServiceImpl()
+        let deviceId = UserDefaults.standard.string(forKey: "userUUID") ?? ""
+        
+        let response = try await authService.signUp(deviceId: deviceId, nickname: nickname)
+        guard let signUpData = response.data else {
+            throw AuthError.invalidResponse
+        }
+        
+        DispatchQueue.main.async {
+            self.userData.userId = signUpData.userId
+            self.userData.nickname = signUpData.nickname
+        }
     }
     
     /// 사용자의 캐릭터 업데이트
