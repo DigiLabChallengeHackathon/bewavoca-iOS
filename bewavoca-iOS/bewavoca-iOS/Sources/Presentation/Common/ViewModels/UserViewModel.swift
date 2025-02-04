@@ -12,21 +12,14 @@ final class UserViewModel: ObservableObject {
     @Published var userData: UserData
     
     /// ViewModel 초기화
-    /// - Parameter isExistingUser: UUID 존재 여부
-    init(isExistingUser: Bool) {
-        if isExistingUser {
-            // UUID가 있는 경우 -> 목데이터 사용 (추후 서버 데이터로 대체)
-            self.userData = MockData.user
-        } else {
-            // 신규 사용자 -> 빈 닉네임으로 초기화
-            self.userData = UserData(
-                userId: 1,
-                nickname: "",
-                character: 1,
-                stage: 1,
-                level: 1
-            )
-        }
+    init() {
+        self.userData = UserData(
+            userId: 0,
+            nickname: "",
+            character: 1,
+            stage: 1,
+            level: 1
+        )
     }
     
     /// 사용자의 닉네임 설정 (신규 사용자용)
@@ -69,12 +62,5 @@ final class UserViewModel: ObservableObject {
             updateLevel(newLevel: userData.level + 1)  // 다음 레벨로
             return false
         }
-    }
-}
-
-extension UserViewModel {
-    static var mock: UserViewModel {
-        let mockViewModel = UserViewModel(isExistingUser: false)
-        return mockViewModel
     }
 }
