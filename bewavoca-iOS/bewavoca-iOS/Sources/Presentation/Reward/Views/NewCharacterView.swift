@@ -50,5 +50,5 @@ struct NewCharacterView: View {
 #Preview {
     NavigationStack {
         NewCharacterView(characterType: .dongbaek)
-    }.environmentObject(NavigationPathManager(userViewModel: UserViewModel.mock))
+    }.environmentObject(NavigationPathManager(userViewModel: UserViewModel()))
 }

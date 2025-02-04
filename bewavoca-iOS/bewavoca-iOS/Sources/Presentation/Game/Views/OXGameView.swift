@@ -187,5 +187,5 @@ struct OXGameBodyView: View {
 #Preview {
     NavigationStack {
         OXGameView()
-    }.environmentObject(NavigationPathManager(userViewModel: UserViewModel.mock))
+    }.environmentObject(NavigationPathManager(userViewModel: UserViewModel()))
 }

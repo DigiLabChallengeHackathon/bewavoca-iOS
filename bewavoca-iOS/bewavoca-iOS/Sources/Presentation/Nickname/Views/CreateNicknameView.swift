@@ -59,7 +59,7 @@ struct CreateNicknameView: View {
 // MARK: - Preview
 #Preview {
     CreateNicknameView()
-        .environmentObject(UserViewModel(isExistingUser: false))
+        .environmentObject(UserViewModel())
 }
 
 // MARK: - TitleView

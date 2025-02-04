@@ -65,5 +65,5 @@ struct StageTitleView: View {
 }
 
 #Preview {
-    StageView().environmentObject(NavigationPathManager(userViewModel: UserViewModel.mock))
+    StageView().environmentObject(NavigationPathManager(userViewModel: UserViewModel()))
 }
