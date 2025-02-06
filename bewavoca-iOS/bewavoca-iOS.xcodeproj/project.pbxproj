@@ -7,8 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D10024042D435F0A0016C73C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = D10024032D435F0A0016C73C /* Alamofire */; };
-		D10024062D435F0A0016C73C /* AlamofireDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = D10024052D435F0A0016C73C /* AlamofireDynamic */; };
+		D11A641C2D51554E0086EC0C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = D11A641B2D51554E0086EC0C /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,8 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D10024042D435F0A0016C73C /* Alamofire in Frameworks */,
-				D10024062D435F0A0016C73C /* AlamofireDynamic in Frameworks */,
+				D11A641C2D51554E0086EC0C /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,8 +83,7 @@
 			);
 			name = "bewavoca-iOS";
 			packageProductDependencies = (
-				D10024032D435F0A0016C73C /* Alamofire */,
-				D10024052D435F0A0016C73C /* AlamofireDynamic */,
+				D11A641B2D51554E0086EC0C /* Alamofire */,
 			);
 			productName = "bewavoca-iOS";
 			productReference = D1DF42572D071195000B872E /* bewavoca-iOS.app */;
@@ -117,7 +114,7 @@
 			mainGroup = D1DF424E2D071195000B872E;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				D10024022D435F0A0016C73C /* XCRemoteSwiftPackageReference "Alamofire" */,
+				D11A641A2D51554E0086EC0C /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D1DF42582D071195000B872E /* Products */;
@@ -355,7 +352,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		D10024022D435F0A0016C73C /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+		D11A641A2D51554E0086EC0C /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
 			requirement = {
@@ -366,15 +363,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		D10024032D435F0A0016C73C /* Alamofire */ = {
+		D11A641B2D51554E0086EC0C /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = D10024022D435F0A0016C73C /* XCRemoteSwiftPackageReference "Alamofire" */;
+			package = D11A641A2D51554E0086EC0C /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
-		};
-		D10024052D435F0A0016C73C /* AlamofireDynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D10024022D435F0A0016C73C /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = AlamofireDynamic;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

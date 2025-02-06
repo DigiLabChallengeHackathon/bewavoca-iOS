@@ -2,8 +2,13 @@ import SwiftUI
 
 // MARK: - AppStatusView
 struct AppStatusView: View {
-    @StateObject private var navigationPathManager = NavigationPathManager(userViewModel: UserViewModel(isExistingUser: false))
+    @StateObject private var navigationPathManager = NavigationPathManager(userViewModel: UserViewModel())
     @State private var isLoadingComplete = false
+    
+    // 인증 관련 추가
+    @AppStorage("userUUID") private var userUUID: String?
+    @State private var isNewUser = true
+    private let authService: AuthService = AuthServiceImpl()
     
     var body: some View {
         NavigationStack(path: $navigationPathManager.navigationPath) {
@@ -11,12 +16,14 @@ struct AppStatusView: View {
                 if !isLoadingComplete {
                     SplashView()
                         .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                isLoadingComplete = true
-                            }
+                            checkDeviceAndProceed()
                         }
                 } else {
-                    LoadingView()
+                    if isNewUser {
+                        OnboardingView()
+                    } else {
+                        LoadingView()
+                    }
                 }
             }
             .navigationDestination(for: AppDestination.self) { destination in
@@ -49,6 +56,45 @@ struct AppStatusView: View {
         .environmentObject(navigationPathManager)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
+    }
+    
+    private func checkDeviceAndProceed() {
+        if userUUID == nil {
+            userUUID = UUID().uuidString
+        }
+        
+        Task {
+            do {
+                let response = try await authService.checkDevice(deviceId: userUUID ?? "")
+                guard let userData = response.data else {
+                    isNewUser = true
+                    print("❌ 사용자 데이터가 없음")
+                    isLoadingComplete = true
+                    return
+                }
+                
+                isNewUser = false
+                
+                DispatchQueue.main.async {
+                    navigationPathManager.userViewModel.userData = UserData(
+                        userId: userData.userid,
+                        nickname: userData.nickname,
+                        character: userData.character,
+                        stage: userData.region,
+                        level: userData.level
+                    )
+                    isLoadingComplete = true
+                }
+                
+                print("✅ 디바이스 체크 성공 및 사용자 데이터 불러오기: \(userData)")
+            } catch {
+                isNewUser = true
+                print("❌ 디바이스 체크 실패: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    isLoadingComplete = true
+                }
+            }
+        }
     }
 }
 

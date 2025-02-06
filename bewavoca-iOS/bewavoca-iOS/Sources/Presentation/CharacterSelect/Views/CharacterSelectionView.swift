@@ -58,6 +58,6 @@ struct CharacterSelectionView: View {
 #Preview {
     NavigationStack {
         CharacterSelectionView()
-    }.environmentObject(NavigationPathManager(userViewModel: UserViewModel.mock))
+    }.environmentObject(NavigationPathManager(userViewModel: UserViewModel()))
     
 }

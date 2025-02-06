@@ -35,5 +35,5 @@ struct MainView: View {
 #Preview {
     NavigationStack {
         MainView()
-    }.environmentObject(NavigationPathManager(userViewModel: UserViewModel.mock))
+    }.environmentObject(NavigationPathManager(userViewModel: UserViewModel()))
 }

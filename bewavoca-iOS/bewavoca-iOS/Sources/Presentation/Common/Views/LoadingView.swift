@@ -33,6 +33,6 @@ struct LoadingView: View {
 }
 
 #Preview {
-    LoadingView().environmentObject(NavigationPathManager(userViewModel: UserViewModel.mock))
+    LoadingView().environmentObject(NavigationPathManager(userViewModel: UserViewModel()))
 }
 
