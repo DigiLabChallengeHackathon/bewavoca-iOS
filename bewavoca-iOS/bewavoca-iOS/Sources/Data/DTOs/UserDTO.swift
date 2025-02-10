@@ -25,3 +25,8 @@ struct SignUpResponse: Decodable {
     let userId: Int
     let nickname: String
 }
+
+struct GameCompleteResponse: Decodable {
+    let stage: Int  // 실제로는 level에 매핑될 값
+    let region: Int // 실제로는 stage에 매핑될 값
+}

@@ -10,6 +10,9 @@ import Foundation
 final class UserViewModel: ObservableObject {
     /// 사용자 데이터를 관리하는 Published 프로퍼티
     @Published var userData: UserData
+    private var deviceId: String {
+        UserDefaults.standard.string(forKey: "userUUID") ?? ""
+    }
     
     /// ViewModel 초기화
     init() {
@@ -25,8 +28,6 @@ final class UserViewModel: ObservableObject {
     /// 사용자의 닉네임 설정 (신규 사용자용)
     func setNickname(_ nickname: String) async throws {
         let authService = AuthServiceImpl()
-        let deviceId = UserDefaults.standard.string(forKey: "userUUID") ?? ""
-        
         let response = try await authService.signUp(deviceId: deviceId, nickname: nickname)
         guard let signUpData = response.data else {
             throw AuthError.invalidResponse
@@ -38,39 +39,30 @@ final class UserViewModel: ObservableObject {
         }
     }
     
+    /// 게임 완료 처리 및 진행도 업데이트
+    func completeGame(region: Int, stage: Int) async throws -> Bool {
+        let gameService = GameServiceImpl()
+        let response = try await gameService.completeGame(
+            deviceId: deviceId,
+            region: region,
+            stage: stage
+        )
+        
+        guard let data = response.data else {
+            throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid response"])
+        }
+        
+        DispatchQueue.main.async {
+            self.userData.stage = data.region
+            self.userData.level = data.stage
+        }
+        
+        return data.region > region
+    }
+    
     /// 사용자의 캐릭터 업데이트
     func updateCharacter(newCharacter: Int) {
         userData.character = newCharacter
         // TODO: 서버 연동 시 캐릭터 변경 API 호출 추가
-    }
-    
-    /// 사용자의 스테이지 진행도 업데이트
-    func updateStage(newStage: Int) {
-        userData.stage = newStage
-        // TODO: 서버 연동 시 스테이지 업데이트 API 호출 추가
-    }
-    
-    /// 사용자의 레벨 업데이트
-    func updateLevel(newLevel: Int) {
-        userData.level = newLevel
-        // TODO: 서버 연동 시 레벨 업데이트 API 호출 추가
-    }
-    
-    /// 스테이지 클리어 시 진행도 업데이트
-    /// - Returns: 스테이지가 올라갔으면 true, 아니면 false
-    func checkAndUpdateProgress(clearedStage: Int, clearedLevel: Int) -> Bool {
-        guard clearedStage == userData.stage else { return false }
-        guard clearedLevel == userData.level else { return false }
-        
-        if userData.level == 3 {  // 현재 레벨이 3(최고 레벨)인 경우
-            let previousStage = userData.stage
-            updateStage(newStage: userData.stage + 1)  // 다음 스테이지로
-            updateLevel(newLevel: 1)  // 레벨 1로 초기화
-            
-            return userData.stage > previousStage  // 스테이지가 올라갔는지 여부 반환
-        } else {  // 현재 레벨이 1 또는 2인 경우
-            updateLevel(newLevel: userData.level + 1)  // 다음 레벨로
-            return false
-        }
     }
 }
