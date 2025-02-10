@@ -101,7 +101,6 @@ struct ResultDetailsView: View {
     }
 }
 
-
 struct ResultInfoView: View {
     let navigationPathManager: NavigationPathManager
     @Binding var isShowingRewardView: Bool
@@ -203,14 +202,27 @@ struct ConfirmButton: View {
         let correctRatio = Double(navigationPathManager.currentResultInfo.correntCount) / Double(navigationPathManager.currentResultInfo.totalCount)
         
         if correctRatio >= 0.5 {
-            let stageIncreased = navigationPathManager.userViewModel.checkAndUpdateProgress(
-                clearedStage: navigationPathManager.currentGameInfo.stage.index,
-                clearedLevel: navigationPathManager.currentGameInfo.game.level
-            )
-            if stageIncreased {
-                isShowingRewardView = true
-            } else {
-                navigationPathManager.navigationPath.append(AppDestination.reward)
+            Task {
+                do {
+                    let currentStage = navigationPathManager.currentGameInfo.stage.index
+                    let currentLevel = navigationPathManager.currentGameInfo.game.level
+                    
+                    print("🔍 현재 스테이지 정보 - stage: \(currentStage), level: \(currentLevel)")
+                    
+                    let stageIncreased = try await navigationPathManager.userViewModel.completeGame(
+                        region: currentStage,
+                        stage: currentLevel
+                    )
+                    
+                    if stageIncreased {
+                        isShowingRewardView = true
+                    } else {
+                        navigationPathManager.resetToMainView()
+                    }
+                } catch {
+                    print("❌ 게임 완료 처리 실패: \(error.localizedDescription)")
+                    navigationPathManager.resetToMainView()
+                }
             }
         } else {
             navigationPathManager.resetToMainView()
