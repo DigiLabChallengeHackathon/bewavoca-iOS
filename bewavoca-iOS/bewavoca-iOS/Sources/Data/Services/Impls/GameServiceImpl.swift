@@ -41,4 +41,19 @@ final class GameServiceImpl: GameService {
         
         return response
     }
+    
+    func updateCharacter(deviceId: String, characterId: Int) async throws -> APIResponse<CharacterUpdateResponse> {
+        let parameters: [String: Any] = [
+            "deviceId": deviceId,
+            "characterId": characterId
+        ]
+        
+        print("🔍 캐릭터 변경 요청: \(parameters)")
+        
+        return try await networkService.request(
+            endpoint: APIEndpoints.updateCharacter,
+            method: .post,
+            parameters: parameters
+        )
+    }
 }

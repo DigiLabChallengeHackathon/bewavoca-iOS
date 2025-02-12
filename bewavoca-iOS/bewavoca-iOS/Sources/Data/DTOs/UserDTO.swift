@@ -30,3 +30,7 @@ struct GameCompleteResponse: Decodable {
     let stage: Int  // 실제로는 level에 매핑될 값
     let region: Int // 실제로는 stage에 매핑될 값
 }
+
+struct CharacterUpdateResponse: Decodable {
+    let characterId: Int
+}

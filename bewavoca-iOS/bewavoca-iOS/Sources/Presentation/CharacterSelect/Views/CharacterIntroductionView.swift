@@ -41,6 +41,7 @@ struct CharacterImageView: View {
 }
 
 struct CharacterInfoView: View {
+    @EnvironmentObject private var navigationPathManager: NavigationPathManager
     let character: CharacterType  // 표시할 캐릭터 정보
     let isCurrentCharacter: Bool  // 현재 선택된 캐릭터인지 여부 (버튼 비활성화용)
     let updateCharacter: (Int) -> Void  // 캐릭터 선택 시 호출될 콜백
@@ -60,7 +61,13 @@ struct CharacterInfoView: View {
                     HapticManager.shared.trigger(.tap)
                     SoundManager.shared.playEffect(.tap)
                     
-                    updateCharacter(character.rawValue)
+                    Task {
+                        do {
+                            try await navigationPathManager.userViewModel.updateCharacter(newCharacter: character.rawValue)
+                        } catch {
+                            print("❌ 캐릭터 변경 실패: \(error.localizedDescription)")
+                        }
+                    }
                 }) {
                     Image("btn_together")
                         .frame(width: 170)
