@@ -11,4 +11,5 @@ struct APIEndpoints {
     static let checkDevice = "/api/auth/check-device"
     static let signUp = "/api/auth/signup"
     static let gameComplete = "/api/quiz/complete"
+    static let updateCharacter = "/api/character/select"
 }
