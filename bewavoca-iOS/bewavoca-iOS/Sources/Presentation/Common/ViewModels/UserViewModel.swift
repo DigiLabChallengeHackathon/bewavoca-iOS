@@ -61,8 +61,19 @@ final class UserViewModel: ObservableObject {
     }
     
     /// 사용자의 캐릭터 업데이트
-    func updateCharacter(newCharacter: Int) {
-        userData.character = newCharacter
-        // TODO: 서버 연동 시 캐릭터 변경 API 호출 추가
+    func updateCharacter(newCharacter: Int) async throws {
+        let gameService = GameServiceImpl()
+        let response = try await gameService.updateCharacter(
+            deviceId: deviceId,
+            characterId: newCharacter
+        )
+        
+        guard response.status == "success" else {
+            throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Update failed"])
+        }
+        
+        DispatchQueue.main.async {
+            self.userData.character = newCharacter
+        }
     }
 }
